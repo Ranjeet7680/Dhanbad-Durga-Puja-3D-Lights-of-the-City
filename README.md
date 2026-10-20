@@ -7,18 +7,23 @@
 # 🪔 DHANBAD DURGA PUJA 3D: LIGHTS OF THE CITY
 ### 3D Festival World Simulator & Exploration Adventure • धनबाद दुर्गा पूजा 3D: शहर की रोशनियाँ
 
+[![Live on Vercel](https://img.shields.io/badge/Vercel-Live%20Production%20Deployment-black?style=for-the-badge&logo=vercel&logoColor=white)](https://busy-franklin-delta.vercel.app)
 [![Unreal Engine 5 Architecture](https://img.shields.io/badge/Architecture-Unreal%20Engine%205-0E1128?style=for-the-badge&logo=unrealengine&logoColor=white)](https://www.unrealengine.com/)
 [![WebGL / Three.js](https://img.shields.io/badge/Runtime-Three.js%20%2F%20WebGL-049EF4?style=for-the-badge&logo=three.js&logoColor=white)](https://threejs.org/)
 [![Hindi Voice Narration](https://img.shields.io/badge/Voice%20Engine-Hindi%20(hi--IN)-E64A19?style=for-the-badge&logo=google-translate&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)
 [![Procedural Audio](https://img.shields.io/badge/Audio-Procedural%20Dhak%20Synth-FFB300?style=for-the-badge&logo=soundcharts&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
-[![Vite 8](https://img.shields.io/badge/Build%20Tool-Vite%208-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+
+<br/>
+
+### 🌐 **[👉 CLICK HERE TO PLAY LIVE ON VERCEL 👈](https://busy-franklin-delta.vercel.app)**
+**Production URL:** `https://busy-franklin-delta.vercel.app`
 
 <p align="center">
   <b>A respectful, exploration-first 3D festival simulator set in Dhanbad, Jharkhand during Durga Puja.</b><br/>
   Walk illuminated streets from dusk to midnight, witness majestic pandals, ride the 24m Giant Wheel, enjoy live Hindi voice dialogues, play the Dhak rhythm challenge, offer Pushpanjali in the sanctum, and restore <i>The Five Lights of Dhanbad</i>.
 </p>
 
-[🎮 Play Live Demo](http://localhost:3000/) • [🗺️ World Topology](#-world-map--district-topology) • [⚙️ Technical Architecture](#-technical-architecture--runtime-systems) • [🔄 Gameplay Loop](#-gameplay-loop--the-five-lights) • [🕹️ Controls](#-controls-guide)
+[🎮 Play on Vercel](https://busy-franklin-delta.vercel.app) • [🗺️ World Topology](#-world-map--district-topology) • [⚙️ Technical Architecture](#-technical-architecture--runtime-systems) • [🔄 Gameplay Loop](#-gameplay-loop--the-five-lights) • [🕹️ Controls](#-controls-guide)
 
 </div>
 
@@ -26,6 +31,7 @@
 
 ## 🌟 Executive Overview & Key Features
 
+* **🌐 Live Globally on Vercel:** Fully optimized production build running on Vercel Edge with zero latency, client-side Web Audio, and Web Speech API.
 * **Authentic Dhanbad Festival Setting:** Explore a stylized, connected hub-and-spoke reconstruction inspired by Dhanbad’s iconic neighbourhoods: **Central Festival Hub**, **Housing Colony Pandal**, **Mega Mela Fairground**, **Jharudih Craft Lane**, and **Purana Bazar / Heritage Lane**.
 * **The Festival Pulse (Dynamic Lighting Timeline):** Dynamic time-of-day progression from warm dusk (**16:30**) through blue hour (**17:30**) to the peak night illumination (**19:30 - 23:00**), with real-time celestial lighting, volumetric fog, and fairy light bloom.
 * **🗣️ Native Hindi Voice Narration (`hi-IN`):** Powered by the Web Speech API, every character (**Aheli**, **Madan da**, **Imran**, **Rupa**, **Dida**) speaks their dialogue lines aloud in natural Hindi with unique pitch and personality, accompanied by authentic fairground loudspeaker PA broadcasts!
@@ -47,7 +53,7 @@ The game world uses a connected **hub-and-spoke spatial layout** designed so tha
 | District / Landmark | In-Game Role | Signature Interaction | Audio & Atmosphere | Priority |
 | :--- | :--- | :--- | :--- | :---: |
 | **Central Festival Hub** `(0, 0, 0)` | Spawn & Information Kiosk | Meet **Aheli**; receive Pandal Passport; view festival map board | Warm dusk lanterns, crowd chatter | **P0** |
-| **Illuminated Light Tunnel** `(0, 0, -32)` | Visual transitional arterial route | Walk through 14 structural arches with sequential chasing LED lights | Chasing LED hum, distant dhak | **P0** |
+| **Illuminated Light Tunnel** `(0, 0, -32)` | Visual transitional arterial route | Chandannagar-style golden arches with silk canopy and chasing LED matrix | Chasing LED hum, distant dhak | **P0** |
 | **Housing Colony Pandal** `(0, 0, -62)` | Main Theme Spectacle (Hero Showpiece) | Multi-tiered Bengali Chala architecture, Alpona floor art, Brocade fabric ceiling, **Pushpanjali Ritual** at the Pratima altar | Peak Dhak reverberation, temple bells | **P0** |
 | **Mega Mela & Fairground** `(45, 0, 0)` | Fairground & Amusements | **24m Giant Wheel (Jhula)** ride with panoramic camera, Carousel, Ring Toss game stall, Food Lane | Mela announcements, vendor calls | **P0** |
 | **Jharudih Craft Lane** `(-40, 0, 0)` | Traditional Artisan Quarter | Speak with **Madan da**; search the courtyard for 3 misplaced **Golden Lotus** craft bundles | Wood carving, bamboo creaks | **P1** |
@@ -66,11 +72,12 @@ The simulator implements a modular, high-fidelity engine architecture compatible
 
 ```
 busy-franklin/
+├── vercel.json                   # Vercel deployment configuration, headers & SPA rewrites
 ├── src/
 │   ├── main.js                   # Application bootstrap, event wiring, and frame update
 │   ├── style.css                 # Festive Indian aesthetic design system
 │   ├── core/
-│   │   ├── Engine.js             # Three.js WebGLRenderer, PCFSoftShadowMap, ACES Tonemapping
+│   │   ├── Engine.js             # Three.js WebGLRenderer, PCFShadowMap, UnrealBloomPass, ACES
 │   │   ├── InputManager.js       # WASD, Arrow keys, Orbit Cam, Touch Analog Joystick
 │   │   ├── FestivalClock.js      # The Festival Pulse: 16:30 to 23:00 sky & lighting curve
 │   │   ├── AudioDirector.js      # Procedural Web Audio API Dhak & Kanshi synthesis
@@ -79,14 +86,16 @@ busy-franklin/
 │   │   └── SaveManager.js        # LocalStorage versioned state with checksums
 │   ├── world/
 │   │   ├── WorldBuilder.js       # Ground terrain, roads, artisan lane, collectibles
+│   │   ├── CityBuildings.js      # Surrounding Dhanbad commercial shopfronts & street life
+│   │   ├── SkyAtmosphere.js      # 1,500 twinkling stars, Moon & rotating sky searchlights
 │   │   ├── CentralHub.js         # Welcome Toran arch, marigold garlands, info kiosk
-│   │   ├── LightTunnel.js        # 40-meter arched dynamic chasing LED light matrix
+│   │   ├── LightTunnel.js        # Chandannagar light pavilion, silk canopy, red velvet runner
 │   │   ├── HousingColonyPandal.js# Multi-tier pandal, sanctum dais, Pratima, diyas, smoke
 │   │   ├── MegaMela.js           # 24m Giant Wheel (Jhula), Carousel, food stalls, game booth
 │   │   ├── CrowdDirector.js      # 3-tier crowd simulation with RVO local avoidance
 │   │   └── TextureGenerator.js   # Procedural canvas Alpona, brocade fabrics, signboards
 │   ├── entities/
-│   │   ├── Player.js             # 3rd-person avatar with procedural walk/run/jump cycles
+│   │   ├── Player.js             # Contoured festive kurta, dupatta, churidar & mojari shoes
 │   │   └── NPC.js                # Authored NPCs: Aheli, Madan da, Imran, Rupa, Dida
 │   ├── gameplay/
 │   │   ├── QuestManager.js       # The Five Lights story graph and chapter progress
@@ -151,43 +160,29 @@ The game loop is exploration-first: players are never forced into combat or arbi
 
 ---
 
-## 🚀 Installation & Quick Start
+## 🚀 Deployment & Local Execution
 
-Ensure you have **Node.js** (v18+) and **npm** installed.
+### Deploying to Vercel
+
+The project is fully pre-configured for Vercel with `vercel.json` and optimized caching headers:
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/Ranjeet7680/Dhanbad-Durga-Puja-3D-Lights-of-the-City.git
+# Deploy to Vercel production
+npx vercel --prod
+```
 
-# 2. Navigate to the project directory
-cd Dhanbad-Durga-Puja-3D-Lights-of-the-City
+### Local Development
 
-# 3. Install dependencies
+```bash
+# 1. Install dependencies
 npm install
 
-# 4. Start local development server
+# 2. Start local development server
 npm run dev
-```
 
-Open your browser at **`http://localhost:3000/`** to enter the festival!
-
-### Building for Production
-
-```bash
-# Compile and optimize production bundle into /dist
+# 3. Build production bundle locally
 npm run build
-
-# Preview production build locally
-npm run preview
 ```
-
----
-
-## 🕊️ Cultural Respect, Safety & Permissions
-
-* **Devotional Integrity:** Sacred elements (such as the *Pratima* tableau and inner sanctum) are depicted with deep respect as devotional focal points. The game contains zero combat, vandalism, or disrespectful actions.
-* **Fictionalized Geographic Adaptation:** Real Dhanbad landmarks (Housing Colony, Railway Ground, Jharudih, Bank More, Purana Bazar) serve as design inspiration for this celebration. The in-game map is a stylized cultural interpretation.
-* **Offline-First & Privacy Preserving:** The entire game runs client-side. No GPS tracking, microphone recordings, or personally identifiable data are collected.
 
 ---
 
