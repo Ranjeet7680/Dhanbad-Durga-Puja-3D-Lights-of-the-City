@@ -5,6 +5,7 @@ import { LightTunnel } from './LightTunnel.js';
 import { HousingColonyPandal } from './HousingColonyPandal.js';
 import { MegaMela } from './MegaMela.js';
 import { SkyAtmosphere } from './SkyAtmosphere.js';
+import { CityBuildings } from './CityBuildings.js';
 
 export class WorldBuilder {
   constructor(scene, engine, festivalClock) {
@@ -14,16 +15,17 @@ export class WorldBuilder {
 
     this.collectibles = [];
     this.treeInstances = [];
-    this.buntingFlags = [];
     this.groundRings = [];
 
     this.initSkyAtmosphere();
     this.initTerrain();
     this.initRoads();
     this.initSubsystems();
+    this.initCityBuildings();
     this.initArtisanCourtyard();
     this.initBoundaryAndDecorations();
     this.initInteractionRings();
+    this.initStreetLighting();
   }
 
   initSkyAtmosphere() {
@@ -32,12 +34,12 @@ export class WorldBuilder {
   }
 
   initTerrain() {
-    // Vast ground terrain with subtle roughness
-    const terrainGeo = new THREE.PlaneGeometry(280, 280, 32, 32);
+    // Vast ground terrain with dark urban pavement texture
+    const terrainGeo = new THREE.PlaneGeometry(320, 320, 32, 32);
     const terrainMat = new THREE.MeshStandardMaterial({
-      color: 0x141A16,
-      roughness: 0.95,
-      metalness: 0.05
+      color: 0x1B1F2A, // Rich dark urban slate / paved festival precinct
+      roughness: 0.85,
+      metalness: 0.1
     });
     this.terrain = new THREE.Mesh(terrainGeo, terrainMat);
     this.terrain.rotation.x = -Math.PI / 2;
@@ -49,39 +51,39 @@ export class WorldBuilder {
   initRoads() {
     const roadMat = new THREE.MeshStandardMaterial({
       map: TextureGenerator.createRoadTexture(),
-      roughness: 0.75,
-      metalness: 0.15
+      roughness: 0.65,
+      metalness: 0.2
     });
 
     // 1. North Road: Central Hub (z=0) -> Light Tunnel -> Housing Colony Pandal (z=-65)
-    const northRoadGeo = new THREE.PlaneGeometry(12, 75);
+    const northRoadGeo = new THREE.PlaneGeometry(14, 80);
     const northRoad = new THREE.Mesh(northRoadGeo, roadMat);
     northRoad.rotation.x = -Math.PI / 2;
-    northRoad.position.set(0, 0.015, -35);
+    northRoad.position.set(0, 0.02, -35);
     northRoad.receiveShadow = true;
     this.scene.add(northRoad);
 
     // 2. East Road: Central Hub (x=0) -> Mega Mela (x=45)
-    const eastRoadGeo = new THREE.PlaneGeometry(45, 10);
+    const eastRoadGeo = new THREE.PlaneGeometry(48, 12);
     const eastRoad = new THREE.Mesh(eastRoadGeo, roadMat);
     eastRoad.rotation.x = -Math.PI / 2;
-    eastRoad.position.set(22.5, 0.015, 0);
+    eastRoad.position.set(24, 0.02, 0);
     eastRoad.receiveShadow = true;
     this.scene.add(eastRoad);
 
     // 3. West Road: Central Hub -> Artisan Lane / Jharudih (x=-40)
-    const westRoadGeo = new THREE.PlaneGeometry(40, 9);
+    const westRoadGeo = new THREE.PlaneGeometry(42, 10);
     const westRoad = new THREE.Mesh(westRoadGeo, roadMat);
     westRoad.rotation.x = -Math.PI / 2;
-    westRoad.position.set(-20, 0.015, 0);
+    westRoad.position.set(-21, 0.02, 0);
     westRoad.receiveShadow = true;
     this.scene.add(westRoad);
 
     // 4. South Road: Central Hub -> Purana Bazar & Hirapur Heritage Lane (z=40)
-    const southRoadGeo = new THREE.PlaneGeometry(10, 48);
+    const southRoadGeo = new THREE.PlaneGeometry(12, 52);
     const southRoad = new THREE.Mesh(southRoadGeo, roadMat);
     southRoad.rotation.x = -Math.PI / 2;
-    southRoad.position.set(0, 0.015, 24);
+    southRoad.position.set(0, 0.02, 26);
     southRoad.receiveShadow = true;
     this.scene.add(southRoad);
   }
@@ -97,6 +99,10 @@ export class WorldBuilder {
 
     this.megaMela = new MegaMela(this.scene, this.festivalClock);
     this.engine.addUpdatable(this.megaMela);
+  }
+
+  initCityBuildings() {
+    this.cityBuildings = new CityBuildings(this.scene, this.festivalClock);
   }
 
   initArtisanCourtyard() {
@@ -129,9 +135,9 @@ export class WorldBuilder {
       artisanGroup.add(pole);
     }
 
-    const workLight = new THREE.PointLight(0xFFB300, 1.6, 16);
+    const workLight = new THREE.PointLight(0xFFB300, 1.8, 18);
     workLight.position.set(0, 4.5, 0);
-    workLight.userData.baseIntensity = 1.6;
+    workLight.userData.baseIntensity = 1.8;
     this.festivalClock.registerFestivalLight(workLight);
     artisanGroup.add(workLight);
 
@@ -165,7 +171,7 @@ export class WorldBuilder {
       lotusGroup.add(petal);
     }
 
-    const itemLight = new THREE.PointLight(0xFFD54F, 1.0, 5);
+    const itemLight = new THREE.PointLight(0xFFD54F, 1.2, 6);
     itemLight.position.y = 0.5;
     lotusGroup.add(itemLight);
 
@@ -181,7 +187,6 @@ export class WorldBuilder {
   }
 
   initInteractionRings() {
-    // Pulsating 3D Golden Ground Rings marking interactive zones
     const stations = [
       { x: 3.5,  z: 4.5,  color: 0x00E5FF, label: 'Aheli' },
       { x: -36,  z: 0,    color: 0x76FF03, label: 'Madan da' },
@@ -195,12 +200,12 @@ export class WorldBuilder {
     ];
 
     stations.forEach((st) => {
-      const ringGeo = new THREE.RingGeometry(1.6, 1.85, 32);
+      const ringGeo = new THREE.RingGeometry(1.6, 1.9, 32);
       const ringMat = new THREE.MeshBasicMaterial({
         color: st.color,
         side: THREE.DoubleSide,
         transparent: true,
-        opacity: 0.8
+        opacity: 0.85
       });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = -Math.PI / 2;
@@ -209,7 +214,6 @@ export class WorldBuilder {
 
       this.groundRings.push({
         mesh: ring,
-        baseScale: 1.0,
         color: st.color
       });
     });
@@ -220,10 +224,9 @@ export class WorldBuilder {
     const leavesMat = new THREE.MeshStandardMaterial({ color: 0x1B5E20, roughness: 0.8 });
 
     const treePositions = [
-      [-25, -25], [-15, -45], [15, -45], [25, -25],
-      [-20, 25], [20, 25], [-35, 20], [35, 20],
-      [-55, -20], [-55, 20], [65, -25], [65, 25],
-      [-22, 10], [22, 10], [-22, -10], [22, -10]
+      [-18, -32], [18, -32], [-18, -50], [18, -50],
+      [-16, 18], [16, 18], [-32, 14], [32, 14],
+      [-52, -14], [-52, 14], [58, -20], [58, 20]
     ];
 
     treePositions.forEach(([tx, tz]) => {
@@ -242,24 +245,34 @@ export class WorldBuilder {
 
       this.scene.add(tree);
     });
+  }
 
-    // Hanging street festoon fairy lights crossing overhead from Hub to Tunnel
-    for (let f = 0; f < 18; f++) {
-      const festoonBulb = new THREE.Mesh(
-        new THREE.SphereGeometry(0.18, 8, 8),
-        new THREE.MeshBasicMaterial({ color: f % 2 === 0 ? 0xFFD54F : 0xFF1744 })
-      );
-      festoonBulb.position.set(
-        Math.sin(f * 0.7) * 4.5,
-        5.2 + Math.cos(f * 0.5) * 0.3,
-        -f * 3.5
-      );
-      this.scene.add(festoonBulb);
-    }
+  initStreetLighting() {
+    // Warm Street Lamp Pools along the main walkways to bathe roads in soft light
+    const lampPosts = [
+      { x: -7, z: -5 },
+      { x: 7,  z: -5 },
+      { x: -7, z: 12 },
+      { x: 7,  z: 12 },
+      { x: 22, z: -6 },
+      { x: 22, z: 6 },
+      { x: -22, z: -5 },
+      { x: -22, z: 5 },
+      { x: 0,  z: 22 },
+      { x: 0,  z: 42 }
+    ];
+
+    lampPosts.forEach((lp) => {
+      // Cast warm downward light pool onto the road
+      const streetLight = new THREE.PointLight(0xFFB300, 1.5, 14);
+      streetLight.position.set(lp.x, 4.2, lp.z);
+      streetLight.userData.baseIntensity = 1.5;
+      this.festivalClock.registerFestivalLight(streetLight);
+      this.scene.add(streetLight);
+    });
   }
 
   update(delta, time) {
-    // Bob and rotate collectible items
     for (let i = 0; i < this.collectibles.length; i++) {
       const item = this.collectibles[i];
       if (!item.collected) {
@@ -268,7 +281,6 @@ export class WorldBuilder {
       }
     }
 
-    // Pulsate ground interaction target rings
     for (let i = 0; i < this.groundRings.length; i++) {
       const r = this.groundRings[i];
       const scale = 1.0 + Math.sin(time * 3.5 + i) * 0.15;

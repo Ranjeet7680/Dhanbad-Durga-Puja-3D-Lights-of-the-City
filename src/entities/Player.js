@@ -6,26 +6,22 @@ export class Player {
     this.engine = engine;
     this.input = inputManager;
 
-    // Player position and kinematics
-    this.position = new THREE.Vector3(0, 0, 10); // Spawns near Central Hub
+    // Kinematics & state
+    this.position = new THREE.Vector3(0, 0, 10);
     this.velocity = new THREE.Vector3(0, 0, 0);
     this.isGrounded = true;
-    this.walkSpeed = 5.0;
-    this.runSpeed = 9.0;
-    this.jumpForce = 7.0;
+    this.walkSpeed = 5.2;
+    this.runSpeed = 9.5;
+    this.jumpForce = 7.2;
     this.gravity = 18.0;
 
-    // Ride state (if player is on the Ferris Wheel)
     this.isOnRide = false;
     this.rideGondola = null;
 
-    // Camera parameters
-    this.cameraDistance = 5.5;
-    this.cameraHeight = 2.4;
+    // Camera follow parameters
+    this.cameraDistance = 5.2;
+    this.cameraHeight = 2.2;
     this.targetCameraPos = new THREE.Vector3();
-
-    // Interaction target
-    this.currentInteractable = null;
 
     this.createMesh();
   }
@@ -34,70 +30,160 @@ export class Player {
     this.group = new THREE.Group();
     this.group.position.copy(this.position);
 
-    // Stylized Indian festival attire (Saffron/Gold Kurta + White Pajama)
+    // Realistic PBR Materials for Festival Attire
     const kurtaMat = new THREE.MeshStandardMaterial({
-      color: 0xF57C00, // Vibrant saffron orange
-      roughness: 0.6
+      color: 0xEE7700, // Vibrant festive Saffron Orange
+      roughness: 0.55,
+      metalness: 0.1
     });
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0xD7A07E, roughness: 0.8 });
-    const hairMat = new THREE.MeshStandardMaterial({ color: 0x1A1412, roughness: 0.9 });
-    const pajamaMat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.7 });
 
-    // Torso / Kurta
-    const torsoGeo = new THREE.CylinderGeometry(0.28, 0.35, 0.85, 8);
-    this.torso = new THREE.Mesh(torsoGeo, kurtaMat);
-    this.torso.position.y = 1.25;
-    this.torso.castShadow = true;
+    const scarfMat = new THREE.MeshStandardMaterial({
+      color: 0x991B1B, // Royal Crimson Angavastram / Dupatta
+      roughness: 0.65,
+      metalness: 0.05
+    });
+
+    const goldBorderMat = new THREE.MeshStandardMaterial({
+      color: 0xFFD54F,
+      metalness: 0.8,
+      roughness: 0.25
+    });
+
+    const churidarMat = new THREE.MeshStandardMaterial({
+      color: 0xFDFDFD, // Crisp White Churidar Trousers
+      roughness: 0.8
+    });
+
+    const skinMat = new THREE.MeshStandardMaterial({
+      color: 0xD09572, // Warm Indian skin tone
+      roughness: 0.75
+    });
+
+    const hairMat = new THREE.MeshStandardMaterial({
+      color: 0x181210, // Dark brown/black hair
+      roughness: 0.9
+    });
+
+    const shoeMat = new THREE.MeshStandardMaterial({
+      color: 0x3E2723, // Traditional leather mojari
+      roughness: 0.4
+    });
+
+    // 1. Torso & Kurta Body (Contoured, natural human proportions)
+    this.torso = new THREE.Group();
+    this.torso.position.y = 1.15;
+
+    // Chest & Waist
+    const chestGeo = new THREE.CylinderGeometry(0.28, 0.24, 0.65, 12);
+    const chest = new THREE.Mesh(chestGeo, kurtaMat);
+    chest.castShadow = true;
+    this.torso.add(chest);
+
+    // Kurta Hem Skirt (A-line flare below waist)
+    const skirtGeo = new THREE.CylinderGeometry(0.24, 0.32, 0.45, 12);
+    const skirt = new THREE.Mesh(skirtGeo, kurtaMat);
+    skirt.position.y = -0.45;
+    skirt.castShadow = true;
+    this.torso.add(skirt);
+
+    // Gold embroidered collar & placket
+    const collar = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.18, 0.20, 0.12, 12),
+      goldBorderMat
+    );
+    collar.position.y = 0.34;
+    this.torso.add(collar);
+
+    const placket = new THREE.Mesh(
+      new THREE.BoxGeometry(0.06, 0.35, 0.02),
+      goldBorderMat
+    );
+    placket.position.set(0, 0.15, 0.26);
+    this.torso.add(placket);
+
+    // 2. Festive Scarf (Angavastram / Dupatta) draped over left shoulder
+    const scarf = new THREE.Mesh(
+      new THREE.BoxGeometry(0.14, 0.9, 0.55),
+      scarfMat
+    );
+    scarf.position.set(-0.22, 0.1, 0.02);
+    scarf.rotation.z = 0.15;
+    this.torso.add(scarf);
+
     this.group.add(this.torso);
 
-    // Decorative Nehru jacket vest
-    const vestGeo = new THREE.CylinderGeometry(0.3, 0.36, 0.65, 8);
-    const vestMat = new THREE.MeshStandardMaterial({ color: 0x880E4F, roughness: 0.5 });
-    const vest = new THREE.Mesh(vestGeo, vestMat);
-    vest.position.y = 1.32;
-    this.group.add(vest);
+    // 3. Head & Face
+    this.head = new THREE.Group();
+    this.head.position.y = 1.78;
 
-    // Head
-    const headGeo = new THREE.SphereGeometry(0.22, 12, 12);
-    this.head = new THREE.Mesh(headGeo, skinMat);
-    this.head.position.y = 1.88;
-    this.head.castShadow = true;
+    const headMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.2, 16, 16),
+      skinMat
+    );
+    headMesh.scale.set(1.0, 1.15, 1.05);
+    headMesh.castShadow = true;
+    this.head.add(headMesh);
+
+    // Styled Hair
+    const hair = new THREE.Mesh(
+      new THREE.SphereGeometry(0.21, 16, 16, 0, Math.PI * 2, 0, Math.PI / 1.8),
+      hairMat
+    );
+    hair.position.set(0, 0.04, -0.02);
+    this.head.add(hair);
+
     this.group.add(this.head);
 
-    // Hair
-    const hairGeo = new THREE.SphereGeometry(0.23, 12, 12, 0, Math.PI * 2, 0, Math.PI / 2);
-    const hair = new THREE.Mesh(hairGeo, hairMat);
-    hair.position.y = 1.92;
-    this.group.add(hair);
+    // 4. Arms (Upper arm + Forearm)
+    const armGeo = new THREE.CylinderGeometry(0.08, 0.07, 0.65, 8);
 
-    // Legs
-    const legGeo = new THREE.BoxGeometry(0.15, 0.85, 0.15);
-    this.leftLeg = new THREE.Mesh(legGeo, pajamaMat);
-    this.leftLeg.position.set(-0.16, 0.45, 0);
-    this.leftLeg.castShadow = true;
-    this.group.add(this.leftLeg);
-
-    this.rightLeg = new THREE.Mesh(legGeo, pajamaMat);
-    this.rightLeg.position.set(0.16, 0.45, 0);
-    this.rightLeg.castShadow = true;
-    this.group.add(this.rightLeg);
-
-    // Arms
-    const armGeo = new THREE.BoxGeometry(0.12, 0.7, 0.12);
+    // Left Arm
     this.leftArm = new THREE.Mesh(armGeo, kurtaMat);
-    this.leftArm.position.set(-0.42, 1.25, 0);
+    this.leftArm.position.set(-0.36, 1.25, 0);
     this.leftArm.castShadow = true;
     this.group.add(this.leftArm);
 
+    // Right Arm
     this.rightArm = new THREE.Mesh(armGeo, kurtaMat);
-    this.rightArm.position.set(0.42, 1.25, 0);
+    this.rightArm.position.set(0.36, 1.25, 0);
     this.rightArm.castShadow = true;
     this.group.add(this.rightArm);
 
-    // Flashlight / lantern beam for evening exploration
-    this.playerTorch = new THREE.SpotLight(0xFFE082, 1.2, 18, Math.PI / 6, 0.5);
-    this.playerTorch.position.set(0, 1.4, 0.2);
-    this.playerTorch.target.position.set(0, 0, 10);
+    // 5. Legs (White Churidar) & Mojari Shoes
+    const legGeo = new THREE.CylinderGeometry(0.1, 0.08, 0.72, 8);
+
+    // Left Leg
+    this.leftLegGroup = new THREE.Group();
+    this.leftLegGroup.position.set(-0.14, 0.72, 0);
+
+    const lLeg = new THREE.Mesh(legGeo, churidarMat);
+    lLeg.position.y = -0.36;
+    lLeg.castShadow = true;
+    this.leftLegGroup.add(lLeg);
+
+    const lShoe = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.1, 0.26), shoeMat);
+    lShoe.position.set(0, -0.68, 0.06);
+    this.leftLegGroup.add(lShoe);
+    this.group.add(this.leftLegGroup);
+
+    // Right Leg
+    this.rightLegGroup = new THREE.Group();
+    this.rightLegGroup.position.set(0.14, 0.72, 0);
+
+    const rLeg = new THREE.Mesh(legGeo, churidarMat);
+    rLeg.position.y = -0.36;
+    rLeg.castShadow = true;
+    this.rightLegGroup.add(rLeg);
+
+    const rShoe = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.1, 0.26), shoeMat);
+    rShoe.position.set(0, -0.68, 0.06);
+    this.rightLegGroup.add(rShoe);
+    this.group.add(this.rightLegGroup);
+
+    // 6. Flashlight / Torch Beam illuminating ground ahead
+    this.playerTorch = new THREE.SpotLight(0xFFE082, 1.6, 22, Math.PI / 5, 0.45);
+    this.playerTorch.position.set(0, 1.5, 0.3);
+    this.playerTorch.target.position.set(0, 0, 12);
     this.group.add(this.playerTorch);
     this.group.add(this.playerTorch.target);
 
@@ -115,7 +201,7 @@ export class Player {
   boardRide(gondola) {
     this.isOnRide = true;
     this.rideGondola = gondola;
-    this.group.visible = false; // Hide player avatar while inside gondola
+    this.group.visible = false;
   }
 
   exitRide(exitPos) {
@@ -127,28 +213,24 @@ export class Player {
 
   update(delta, time) {
     if (this.isOnRide && this.rideGondola) {
-      // Camera locks to gondola for scenic sky ride
       const gondolaWorldPos = new THREE.Vector3();
       this.rideGondola.getWorldPosition(gondolaWorldPos);
       this.position.copy(gondolaWorldPos);
 
-      // Camera positioned slightly behind gondola looking out towards pandals
       const cam = this.engine.camera;
       cam.position.set(
-        gondolaWorldPos.x - 8,
-        gondolaWorldPos.y + 2,
-        gondolaWorldPos.z + 12
+        gondolaWorldPos.x - 9,
+        gondolaWorldPos.y + 2.5,
+        gondolaWorldPos.z + 14
       );
-      cam.lookAt(0, 8, -40); // Looks toward the illuminated Housing Colony Pandal
+      cam.lookAt(0, 10, -45);
       return;
     }
 
-    // Normal locomotion
     this.input.updateMovement();
     const move = this.input.moveVector;
     const isMoving = move.lengthSq() > 0.01;
 
-    // Movement relative to camera yaw
     const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.input.cameraYaw);
     const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.input.cameraYaw);
 
@@ -163,7 +245,6 @@ export class Player {
       this.velocity.x = moveDir.x * speed;
       this.velocity.z = moveDir.z * speed;
 
-      // Face movement direction smoothly
       const targetAngle = Math.atan2(moveDir.x, moveDir.z);
       this.group.rotation.y = targetAngle;
     } else {
@@ -171,7 +252,6 @@ export class Player {
       this.velocity.z *= 0.6;
     }
 
-    // Jump / Gravity
     if (this.input.jumpRequested && this.isGrounded) {
       this.velocity.y = this.jumpForce;
       this.isGrounded = false;
@@ -181,12 +261,10 @@ export class Player {
       this.velocity.y -= this.gravity * delta;
     }
 
-    // Apply kinematics
     this.position.x += this.velocity.x * delta;
     this.position.y += this.velocity.y * delta;
     this.position.z += this.velocity.z * delta;
 
-    // Simple floor collision (flat festival grounds y = 0)
     if (this.position.y <= 0) {
       this.position.y = 0;
       this.velocity.y = 0;
@@ -197,29 +275,30 @@ export class Player {
 
     // Walk / Run Cycle Animation
     if (isMoving && this.isGrounded) {
-      const animSpeed = this.input.isSprinting ? 14 : 9;
+      const animSpeed = this.input.isSprinting ? 14 : 9.5;
       this.animTime += delta * animSpeed;
-      const legSwing = Math.sin(this.animTime) * 0.7;
+      const legSwing = Math.sin(this.animTime) * 0.65;
       const armSwing = Math.sin(this.animTime) * 0.5;
 
-      this.leftLeg.rotation.x = legSwing;
-      this.rightLeg.rotation.x = -legSwing;
+      this.leftLegGroup.rotation.x = legSwing;
+      this.rightLegGroup.rotation.x = -legSwing;
       this.leftArm.rotation.x = -armSwing;
       this.rightArm.rotation.x = armSwing;
 
-      // Subtle bob
-      this.torso.position.y = 1.25 + Math.abs(Math.sin(this.animTime * 2)) * 0.06;
+      // Kurta torso sway and subtle bob
+      this.torso.position.y = 1.15 + Math.abs(Math.sin(this.animTime * 2)) * 0.05;
+      this.torso.rotation.y = Math.sin(this.animTime) * 0.08;
     } else {
-      // Idle breathing
+      // Idle natural breathing
       this.animTime += delta * 2;
-      this.leftLeg.rotation.x = 0;
-      this.rightLeg.rotation.x = 0;
-      this.leftArm.rotation.x = Math.sin(this.animTime) * 0.05;
-      this.rightArm.rotation.x = -Math.sin(this.animTime) * 0.05;
-      this.torso.position.y = 1.25;
+      this.leftLegGroup.rotation.x = 0;
+      this.rightLegGroup.rotation.x = 0;
+      this.leftArm.rotation.x = Math.sin(this.animTime) * 0.04;
+      this.rightArm.rotation.x = -Math.sin(this.animTime) * 0.04;
+      this.torso.position.y = 1.15 + Math.sin(this.animTime) * 0.015;
+      this.torso.rotation.y = 0;
     }
 
-    // Orbit Camera Follow
     this.updateCamera(delta);
   }
 
@@ -228,7 +307,6 @@ export class Player {
     const yaw = this.input.cameraYaw;
     const pitch = this.input.cameraPitch;
 
-    // Spherical coordinates around player head
     const targetLook = new THREE.Vector3(
       this.position.x,
       this.position.y + this.cameraHeight,
@@ -246,13 +324,11 @@ export class Player {
       targetLook.z + offsetZ
     );
 
-    // Prevent camera from dipping underground
-    if (this.targetCameraPos.y < 0.5) {
-      this.targetCameraPos.y = 0.5;
+    if (this.targetCameraPos.y < 0.6) {
+      this.targetCameraPos.y = 0.6;
     }
 
-    // Smooth camera damping
-    cam.position.lerp(this.targetCameraPos, 0.25);
+    cam.position.lerp(this.targetCameraPos, 0.28);
     cam.lookAt(targetLook);
   }
 }
