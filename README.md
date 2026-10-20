@@ -8,6 +8,7 @@
 ### 3D Festival World Simulator & Exploration Adventure • धनबाद दुर्गा पूजा 3D: शहर की रोशनियाँ
 
 [![Live on Vercel](https://img.shields.io/badge/Vercel-Live%20Production%20Deployment-black?style=for-the-badge&logo=vercel&logoColor=white)](https://busy-franklin-delta.vercel.app)
+[![GitHub Wiki](https://img.shields.io/badge/Documentation-GitHub%20Wiki-blue?style=for-the-badge&logo=gitbook&logoColor=white)](https://github.com/Ranjeet7680/Dhanbad-Durga-Puja-3D-Lights-of-the-City/wiki)
 [![Unreal Engine 5 Architecture](https://img.shields.io/badge/Architecture-Unreal%20Engine%205-0E1128?style=for-the-badge&logo=unrealengine&logoColor=white)](https://www.unrealengine.com/)
 [![WebGL / Three.js](https://img.shields.io/badge/Runtime-Three.js%20%2F%20WebGL-049EF4?style=for-the-badge&logo=three.js&logoColor=white)](https://threejs.org/)
 [![Hindi Voice Narration](https://img.shields.io/badge/Voice%20Engine-Hindi%20(hi--IN)-E64A19?style=for-the-badge&logo=google-translate&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)
@@ -23,7 +24,7 @@
   Walk illuminated streets from dusk to midnight, witness majestic pandals, ride the 24m Giant Wheel, enjoy live Hindi voice dialogues, play the Dhak rhythm challenge, offer Pushpanjali in the sanctum, and restore <i>The Five Lights of Dhanbad</i>.
 </p>
 
-[🎮 Play on Vercel](https://busy-franklin-delta.vercel.app) • [🗺️ World Topology](#-world-map--district-topology) • [⚙️ Technical Architecture](#-technical-architecture--runtime-systems) • [🔄 Gameplay Loop](#-gameplay-loop--the-five-lights) • [🕹️ Controls](#-controls-guide)
+[🎮 Play on Vercel](https://busy-franklin-delta.vercel.app) • [📚 Official Wiki](https://github.com/Ranjeet7680/Dhanbad-Durga-Puja-3D-Lights-of-the-City/wiki) • [🗺️ World Topology](#-world-map--district-topology) • [⚙️ Technical Architecture](#-technical-architecture--runtime-systems) • [🔄 Gameplay Loop](#-gameplay-loop--the-five-lights) • [🕹️ Controls](#-controls-guide)
 
 </div>
 
