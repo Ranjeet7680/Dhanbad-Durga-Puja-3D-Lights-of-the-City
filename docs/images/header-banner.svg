@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="100%">
+  <defs>
+    <!-- Sky & Horizon Gradients -->
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#050714"/>
+      <stop offset="45%" stop-color="#0D1630"/>
+      <stop offset="75%" stop-color="#2D152B"/>
+      <stop offset="90%" stop-color="#802816"/>
+      <stop offset="100%" stop-color="#D9531E"/>
+    </linearGradient>
+
+    <radialGradient id="sunGlow" cx="50%" cy="100%" r="65%">
+      <stop offset="0%" stop-color="#FFB300" stop-opacity="0.85"/>
+      <stop offset="35%" stop-color="#E64A19" stop-opacity="0.45"/>
+      <stop offset="70%" stop-color="#880E4F" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Gold Text Gradients -->
+    <linearGradient id="goldTextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="25%" stop-color="#FFB300"/>
+      <stop offset="50%" stop-color="#FFF9C4"/>
+      <stop offset="75%" stop-color="#FFA000"/>
+      <stop offset="100%" stop-color="#FFD54F"/>
+    </linearGradient>
+
+    <!-- Glow Filters -->
+    <filter id="glowGold" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="glowFairy" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="heavyGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" result="blur1"/>
+      <feGaussianBlur stdDeviation="6" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Sky -->
+  <rect width="1200" height="420" fill="url(#skyGrad)"/>
+  <rect width="1200" height="420" fill="url(#sunGlow)"/>
+
+  <!-- Starry Constellations -->
+  <g fill="#FFF" opacity="0.65">
+    <circle cx="85" cy="45" r="1.5"/>
+    <circle cx="160" cy="80" r="1.2"/>
+    <circle cx="240" cy="35" r="2.0" filter="url(#glowFairy)"/>
+    <circle cx="310" cy="110" r="1.0"/>
+    <circle cx="450" cy="50" r="1.8"/>
+    <circle cx="580" cy="30" r="1.2"/>
+    <circle cx="720" cy="75" r="2.2" filter="url(#glowFairy)"/>
+    <circle cx="860" cy="40" r="1.5"/>
+    <circle cx="950" cy="90" r="1.2"/>
+    <circle cx="1080" cy="35" r="2.0" filter="url(#glowFairy)"/>
+    <circle cx="1140" cy="100" r="1.4"/>
+  </g>
+
+  <!-- Distant Dhanbad Colliery & Skyline Silhouettes -->
+  <path d="M0,380 L60,350 L110,365 L180,340 L240,360 L320,330 L390,355 L460,335 L540,360 L620,330 L710,355 L800,335 L880,350 L960,325 L1040,345 L1120,330 L1200,360 L1200,420 L0,420 Z" fill="#0C0E1E" opacity="0.85"/>
+
+  <!-- Left: Stylized Silhouette of Mega Mela Giant Ferris Wheel (Jhula) -->
+  <g transform="translate(180, 260)" opacity="0.8">
+    <!-- A-Frame Stand -->
+    <line x1="-30" y1="130" x2="0" y2="0" stroke="#E64A19" stroke-width="4"/>
+    <line x1="30" y1="130" x2="0" y2="0" stroke="#E64A19" stroke-width="4"/>
+    <circle cx="0" cy="0" r="8" fill="#FFD54F" filter="url(#glowFairy)"/>
+    <!-- Outer Rim & Inner Rim -->
+    <circle cx="0" cy="0" r="95" fill="none" stroke="#FFB300" stroke-width="2.5" opacity="0.9"/>
+    <circle cx="0" cy="0" r="60" fill="none" stroke="#FF8F00" stroke-width="1.8" opacity="0.7"/>
+    <!-- Spokes with Neon Nodes -->
+    <line x1="-95" y1="0" x2="95" y2="0" stroke="#FFE082" stroke-width="1.5"/>
+    <line x1="0" y1="-95" x2="0" y2="95" stroke="#FFE082" stroke-width="1.5"/>
+    <line x1="-67" y1="-67" x2="67" y2="67" stroke="#FFE082" stroke-width="1.5"/>
+    <line x1="-67" y1="67" x2="67" y2="-67" stroke="#FFE082" stroke-width="1.5"/>
+    <!-- Gondolas (Cabins) -->
+    <circle cx="95" cy="0" r="7" fill="#00E5FF" filter="url(#glowFairy)"/>
+    <circle cx="-95" cy="0" r="7" fill="#FF1744" filter="url(#glowFairy)"/>
+    <circle cx="0" cy="95" r="7" fill="#76FF03" filter="url(#glowFairy)"/>
+    <circle cx="0" cy="-95" r="7" fill="#FFEA00" filter="url(#glowFairy)"/>
+    <circle cx="67" cy="67" r="7" fill="#E040FB" filter="url(#glowFairy)"/>
+    <circle cx="-67" cy="-67" r="7" fill="#FF6D00" filter="url(#glowFairy)"/>
+    <circle cx="67" cy="-67" r="7" fill="#00E5FF" filter="url(#glowFairy)"/>
+    <circle cx="-67" cy="67" r="7" fill="#FF1744" filter="url(#glowFairy)"/>
+  </g>
+
+  <!-- Right: Silhouette of Grand Housing Colony Durga Puja Pandal -->
+  <g transform="translate(1010, 240)">
+    <!-- Base Plinth -->
+    <rect x="-130" y="90" width="260" height="60" fill="#150E18" stroke="#FFB300" stroke-width="1.5"/>
+    <!-- Tier 1 -->
+    <path d="M-120,90 L-100,20 L100,20 L120,90 Z" fill="#20111F" stroke="#E64A19" stroke-width="2"/>
+    <!-- Tier 2 -->
+    <path d="M-90,20 L-70,-40 L70,-40 L90,20 Z" fill="#2E1428" stroke="#FFB300" stroke-width="2"/>
+    <!-- Tier 3 & Curved Chala Roof -->
+    <path d="M-60,-40 Q0,-75 60,-40 L45,-90 Q0,-120 -45,-90 Z" fill="#441733" stroke="#FFD54F" stroke-width="2"/>
+    <!-- Kalash Spire -->
+    <path d="M-12,-110 L0,-165 L12,-110 Z" fill="#FFD54F" filter="url(#glowGold)"/>
+    <circle cx="0" cy="-172" r="7" fill="#FFF9C4" filter="url(#heavyGlow)"/>
+    <!-- Sanctum Inner Glow -->
+    <ellipse cx="0" cy="70" rx="35" ry="45" fill="#FFA000" opacity="0.6" filter="url(#heavyGlow)"/>
+    <!-- Idol Silhouette -->
+    <path d="M-8,60 C-15,45 -5,35 0,25 C5,35 15,45 8,60 Z" fill="#120A14"/>
+  </g>
+
+  <!-- Center Floating Divine Trishul Motif -->
+  <g transform="translate(600, 110)">
+    <!-- Aura -->
+    <circle cx="0" cy="0" r="48" fill="#FFB300" opacity="0.25" filter="url(#heavyGlow)"/>
+    <!-- Trishul Prongs -->
+    <path d="M-22,-20 Q-28,5 -8,12 L-8,35 L8,35 L8,12 Q28,5 22,-20 Q12,-5 6,-10 L6,-38 L-6,-38 L-6,-10 Q-12,-5 -22,-20 Z" fill="url(#goldTextGrad)" filter="url(#glowGold)"/>
+    <!-- Trishul Shaft -->
+    <rect x="-3" y="35" width="6" height="38" fill="url(#goldTextGrad)"/>
+    <circle cx="0" cy="18" r="4" fill="#E64A19"/>
+  </g>
+
+  <!-- Fairy Light Festoon Strings Across Sky -->
+  <g fill="none" stroke-width="1.2" opacity="0.85">
+    <path d="M0,60 Q300,140 600,75 Q900,140 1200,60" stroke="#FFA726" stroke-dasharray="2, 16"/>
+    <path d="M0,80 Q300,165 600,95 Q900,165 1200,80" stroke="#00E5FF" stroke-dasharray="2, 20"/>
+  </g>
+
+  <!-- Glowing Light Dots on Strings -->
+  <g filter="url(#glowFairy)">
+    <circle cx="150" cy="95" r="3.5" fill="#FFD54F"/>
+    <circle cx="280" cy="120" r="3.5" fill="#FF1744"/>
+    <circle cx="420" cy="115" r="3.5" fill="#00E5FF"/>
+    <circle cx="780" cy="115" r="3.5" fill="#76FF03"/>
+    <circle cx="920" cy="120" r="3.5" fill="#FFD54F"/>
+    <circle cx="1060" cy="95" r="3.5" fill="#E040FB"/>
+  </g>
+
+  <!-- Main Title & Typography -->
+  <g text-anchor="middle">
+    <!-- Subtitle (Hindi) -->
+    <text x="600" y="210" font-family="'Yatra One', 'Cinzel', Georgia, serif" font-size="24" font-weight="700" fill="#FFE082" letter-spacing="3" filter="url(#glowGold)">
+      धनबाद दुर्गा पूजा 3D • शहर की रोशनियाँ
+    </text>
+
+    <!-- Main Title (English / Cinematic) -->
+    <text x="600" y="265" font-family="'Cinzel', Georgia, serif" font-size="52" font-weight="900" fill="url(#goldTextGrad)" letter-spacing="5" filter="url(#glowGold)">
+      DHANBAD DURGA PUJA 3D
+    </text>
+
+    <!-- Descriptor / Pitch -->
+    <text x="600" y="305" font-family="'Plus Jakarta Sans', sans-serif" font-size="16" font-weight="600" fill="#F3F4F6" letter-spacing="2">
+      LIGHTS OF THE CITY • 3D FESTIVAL WORLD SIMULATOR
+    </text>
+  </g>
+
+  <!-- Tech Badges Bar -->
+  <g transform="translate(600, 360)" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="700">
+    <!-- Badge 1: UE5 Architecture -->
+    <g transform="translate(-310, 0)">
+      <rect x="-85" y="-16" width="170" height="32" rx="16" fill="#182138" stroke="#FFB300" stroke-width="1.5"/>
+      <text y="5" fill="#FFD54F">🎮 UNREAL ENGINE 5</text>
+    </g>
+
+    <!-- Badge 2: Hindi Voice Engine -->
+    <g transform="translate(-100, 0)">
+      <rect x="-95" y="-16" width="190" height="32" rx="16" fill="#182138" stroke="#00E5FF" stroke-width="1.5"/>
+      <text y="5" fill="#00E5FF">🗣️ HINDI VOICE (hi-IN)</text>
+    </g>
+
+    <!-- Badge 3: WebGL 3D Simulator -->
+    <g transform="translate(105, 0)">
+      <rect x="-85" y="-16" width="170" height="32" rx="16" fill="#182138" stroke="#76FF03" stroke-width="1.5"/>
+      <text y="5" fill="#76FF03">🌐 WEBGL / THREE.JS</text>
+    </g>
+
+    <!-- Badge 4: Procedural Dhak Audio -->
+    <g transform="translate(305, 0)">
+      <rect x="-85" y="-16" width="170" height="32" rx="16" fill="#182138" stroke="#E040FB" stroke-width="1.5"/>
+      <text y="5" fill="#E040FB">🥁 DHAK SYNTHESIZER</text>
+    </g>
+  </g>
+
+  <!-- Bottom Glowing Edge Line -->
+  <rect x="0" y="416" width="1200" height="4" fill="url(#goldTextGrad)" filter="url(#glowGold)"/>
+</svg>

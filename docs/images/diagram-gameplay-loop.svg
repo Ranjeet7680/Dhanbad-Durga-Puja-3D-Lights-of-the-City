@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" width="100%" height="100%">
+  <defs>
+    <linearGradient id="loopBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070A14"/>
+      <stop offset="50%" stop-color="#121A2D"/>
+      <stop offset="100%" stop-color="#050811"/>
+    </linearGradient>
+
+    <linearGradient id="stepGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A2844"/>
+      <stop offset="100%" stop-color="#0E182A"/>
+    </linearGradient>
+
+    <filter id="loopGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1100" height="700" fill="url(#loopBg)"/>
+
+  <!-- Title -->
+  <rect x="30" y="25" width="1040" height="60" rx="8" fill="#131F36" stroke="#FFB300" stroke-width="1.5"/>
+  <text x="50" y="62" font-family="'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="800" fill="#FFD54F">
+    🔄 CORE GAMEPLAY LOOP &amp; THE FIVE LIGHTS PROGRESSION BLUEPRINT
+  </text>
+  <text x="790" y="61" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="600" fill="#80D8FF">
+    STORY-DRIVEN DISCOVERY &amp; REWARDS
+  </text>
+
+  <!-- TOP SECTION: MINUTE-TO-MINUTE CORE LOOP FLOW -->
+  <g transform="translate(50, 110)">
+    <text x="0" y="14" font-size="13" font-weight="800" fill="#FFB300" letter-spacing="1">
+      MINUTE-TO-MINUTE EXPLORATION LOOP:
+    </text>
+
+    <!-- Step 1 -->
+    <g transform="translate(0, 30)">
+      <rect width="170" height="65" rx="8" fill="url(#stepGrad)" stroke="#FFB300" stroke-width="1.5"/>
+      <text x="15" y="24" font-size="18">🧭</text>
+      <text x="45" y="24" font-size="11" font-weight="800" fill="#FFD54F">1. EXPLORE</text>
+      <text x="12" y="44" font-size="9" fill="#E0E0E0">Walk through glowing</text>
+      <text x="12" y="56" font-size="9" fill="#E0E0E0">streets &amp; districts</text>
+    </g>
+
+    <path d="M180,62 L200,62" stroke="#FFB300" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="186" y="56" font-size="14" fill="#FFB300">➔</text>
+
+    <!-- Step 2 -->
+    <g transform="translate(205, 30)">
+      <rect width="175" height="65" rx="8" fill="url(#stepGrad)" stroke="#00E5FF" stroke-width="1.5"/>
+      <text x="15" y="24" font-size="18">🔊</text>
+      <text x="45" y="24" font-size="11" font-weight="800" fill="#00E5FF">2. NOTICE CUE</text>
+      <text x="12" y="44" font-size="9" fill="#E0E0E0">Dhak beats grow louder</text>
+      <text x="12" y="56" font-size="9" fill="#E0E0E0">LEDs pulse in the distance</text>
+    </g>
+
+    <text x="390" y="56" font-size="14" fill="#00E5FF">➔</text>
+
+    <!-- Step 3 -->
+    <g transform="translate(410, 30)">
+      <rect width="175" height="65" rx="8" fill="url(#stepGrad)" stroke="#E040FB" stroke-width="1.5"/>
+      <text x="15" y="24" font-size="18">💬</text>
+      <text x="45" y="24" font-size="11" font-weight="800" fill="#E040FB">3. INTERACT [E]</text>
+      <text x="12" y="44" font-size="9" fill="#E0E0E0">Speak in Hindi voice or</text>
+      <text x="12" y="56" font-size="9" fill="#E0E0E0">board the Giant Wheel</text>
+    </g>
+
+    <text x="595" y="56" font-size="14" fill="#E040FB">➔</text>
+
+    <!-- Step 4 -->
+    <g transform="translate(615, 30)">
+      <rect width="180" height="65" rx="8" fill="url(#stepGrad)" stroke="#76FF03" stroke-width="1.5"/>
+      <text x="15" y="24" font-size="18">🎮</text>
+      <text x="45" y="24" font-size="11" font-weight="800" fill="#76FF03">4. MINI-GAME</text>
+      <text x="12" y="44" font-size="9" fill="#E0E0E0">Play Dhak rhythm,</text>
+      <text x="12" y="56" font-size="9" fill="#E0E0E0">Ring toss or Pushpanjali</text>
+    </g>
+
+    <text x="805" y="56" font-size="14" fill="#76FF03">➔</text>
+
+    <!-- Step 5 -->
+    <g transform="translate(825, 30)">
+      <rect width="175" height="65" rx="8" fill="url(#stepGrad)" stroke="#FFD54F" stroke-width="1.5"/>
+      <text x="15" y="24" font-size="18">📖</text>
+      <text x="45" y="24" font-size="11" font-weight="800" fill="#FFD54F">5. REWARD</text>
+      <text x="12" y="44" font-size="9" fill="#E0E0E0">Passport Stamp + Tokens</text>
+      <text x="12" y="56" font-size="9" fill="#E0E0E0">Light Lantern &amp; Advance</text>
+    </g>
+  </g>
+
+  <!-- MIDDLE SECTION: THE FIVE LIGHTS OF DHANBAD STORY TREE -->
+  <g transform="translate(50, 240)">
+    <text x="0" y="0" font-size="13" font-weight="800" fill="#FFB300" letter-spacing="1">
+      NARRATIVE PROGRESSION: "THE FIVE LIGHTS OF DHANBAD"
+    </text>
+
+    <!-- 5 LIGHTS CARDS IN A VERTICAL / HORIZONTAL GRID -->
+
+    <!-- Light 1: Welcome Light -->
+    <g transform="translate(0, 20)">
+      <rect width="185" height="180" rx="8" fill="#152136" stroke="#FFB300" stroke-width="2"/>
+      <rect width="185" height="32" rx="8" fill="#FFB300"/>
+      <text x="92" y="21" text-anchor="middle" font-size="11" font-weight="800" fill="#000">1. WELCOME LIGHT</text>
+      <text x="92" y="65" text-anchor="middle" font-size="32">🌟</text>
+      <text x="15" y="95" font-size="10" font-weight="700" fill="#FFD54F">Character: Aheli</text>
+      <text x="15" y="112" font-size="9" fill="#DDD">Location: Central Hub</text>
+      <text x="15" y="130" font-size="9" fill="#FFF">• Onboarding &amp; Guide</text>
+      <text x="15" y="145" font-size="9" fill="#FFF">• Receive Pandal Passport</text>
+      <text x="15" y="165" font-size="9" font-weight="700" fill="#76FF03">Reward: +50 Tokens</text>
+    </g>
+
+    <!-- Connector -->
+    <text x="190" y="115" font-size="20" fill="#FFB300">➔</text>
+
+    <!-- Light 2: Craft Light -->
+    <g transform="translate(205, 20)">
+      <rect width="185" height="180" rx="8" fill="#142618" stroke="#76FF03" stroke-width="2"/>
+      <rect width="185" height="32" rx="8" fill="#76FF03"/>
+      <text x="92" y="21" text-anchor="middle" font-size="11" font-weight="800" fill="#000">2. CRAFT LIGHT</text>
+      <text x="92" y="65" text-anchor="middle" font-size="32">🪷</text>
+      <text x="15" y="95" font-size="10" font-weight="700" fill="#76FF03">Character: Madan da</text>
+      <text x="15" y="112" font-size="9" fill="#DDD">Location: Jharudih</text>
+      <text x="15" y="130" font-size="9" fill="#FFF">• Find 3 Golden Lotuses</text>
+      <text x="15" y="145" font-size="9" fill="#FFF">• Bamboo pandal craft lore</text>
+      <text x="15" y="165" font-size="9" font-weight="700" fill="#76FF03">Reward: +100 Tokens</text>
+    </g>
+
+    <!-- Connector -->
+    <text x="395" y="115" font-size="20" fill="#76FF03">➔</text>
+
+    <!-- Light 3: Courage Light -->
+    <g transform="translate(410, 20)">
+      <rect width="185" height="180" rx="8" fill="#0C2036" stroke="#00E5FF" stroke-width="2"/>
+      <rect width="185" height="32" rx="8" fill="#00E5FF"/>
+      <text x="92" y="21" text-anchor="middle" font-size="11" font-weight="800" fill="#000">3. COURAGE LIGHT</text>
+      <text x="92" y="65" text-anchor="middle" font-size="32">🎡</text>
+      <text x="15" y="95" font-size="10" font-weight="700" fill="#00E5FF">Character: Imran</text>
+      <text x="15" y="112" font-size="9" fill="#DDD">Location: Mega Mela</text>
+      <text x="15" y="130" font-size="9" fill="#FFF">• Board the Giant Wheel</text>
+      <text x="15" y="145" font-size="9" fill="#FFF">• 24m Skyline panorama</text>
+      <text x="15" y="165" font-size="9" font-weight="700" fill="#76FF03">Reward: +100 Tokens</text>
+    </g>
+
+    <!-- Connector -->
+    <text x="600" y="115" font-size="20" fill="#00E5FF">➔</text>
+
+    <!-- Light 4: Community Light -->
+    <g transform="translate(615, 20)">
+      <rect width="185" height="180" rx="8" fill="#2D1426" stroke="#E040FB" stroke-width="2"/>
+      <rect width="185" height="32" rx="8" fill="#E040FB"/>
+      <text x="92" y="21" text-anchor="middle" font-size="11" font-weight="800" fill="#000">4. COMMUNITY LIGHT</text>
+      <text x="92" y="65" text-anchor="middle" font-size="32">🍯</text>
+      <text x="15" y="95" font-size="10" font-weight="700" fill="#E040FB">Character: Rupa</text>
+      <text x="15" y="112" font-size="9" fill="#DDD">Location: Food Lane</text>
+      <text x="15" y="130" font-size="9" fill="#FFF">• Fresh Jalebi delivery</text>
+      <text x="15" y="145" font-size="9" fill="#FFF">• Volunteer hospitality</text>
+      <text x="15" y="165" font-size="9" font-weight="700" fill="#76FF03">Reward: +100 Tokens</text>
+    </g>
+
+    <!-- Connector -->
+    <text x="805" y="115" font-size="20" fill="#E040FB">➔</text>
+
+    <!-- Light 5: Home Light -->
+    <g transform="translate(820, 20)">
+      <rect width="180" height="180" rx="8" fill="#2E170E" stroke="#FF9100" stroke-width="2"/>
+      <rect width="180" height="32" rx="8" fill="#FF9100"/>
+      <text x="90" y="21" text-anchor="middle" font-size="11" font-weight="800" fill="#000">5. HOME LIGHT</text>
+      <text x="90" y="65" text-anchor="middle" font-size="32">🏮</text>
+      <text x="15" y="95" font-size="10" font-weight="700" fill="#FF9100">Character: Dida</text>
+      <text x="15" y="112" font-size="9" fill="#DDD">Location: Heritage Lane</text>
+      <text x="15" y="130" font-size="9" fill="#FFF">• 1968 Colliery memories</text>
+      <text x="15" y="145" font-size="9" fill="#FFF">• Sacred Pushpanjali offering</text>
+      <text x="15" y="165" font-size="9" font-weight="700" fill="#76FF03">Reward: +250 Tokens</text>
+    </g>
+  </g>
+
+  <!-- BOTTOM SECTION: VICTORY CEREMONY & EXPORT -->
+  <g transform="translate(50, 480)">
+    <rect width="1000" height="175" rx="12" fill="#141E34" stroke="#FFD54F" stroke-width="2" filter="url(#loopGlow)"/>
+
+    <!-- Left Box: Victory Condition -->
+    <g transform="translate(30, 25)">
+      <text x="0" y="20" font-size="18" font-weight="800" fill="#FFD54F">🏆 ALL 5 LIGHTS ABLAZE • FESTIVAL CHAMPION</text>
+      <text x="0" y="46" font-size="11" fill="#FFF">
+        Upon completing all 5 Lights of Dhanbad, the entire city undergoes the Peak Night Illumination:
+      </text>
+      <text x="0" y="70" font-size="10" fill="#90CAF9">
+        • Sky shifts to starfield midnight with illuminated fireworks particles over the Housing Colony pandal.
+      </text>
+      <text x="0" y="90" font-size="10" fill="#90CAF9">
+        • Unlocks the 100% Verified Explorer Seal on your official Pandal Passport.
+      </text>
+      <text x="0" y="110" font-size="10" fill="#90CAF9">
+        • All Mini-games (Dhak Rhythm, Ring Toss) unlock High-Score Master badges.
+      </text>
+      <text x="0" y="130" font-size="10" fill="#76FF03">
+        • Free-roam mode unlocked with peaceful ambient night crickets and celebratory crowd chatter.
+      </text>
+    </g>
+
+    <!-- Right Box: Memory Lens Postcard Export -->
+    <g transform="translate(680, 25)">
+      <rect width="280" height="125" rx="8" fill="#1B2844" stroke="#00E5FF" stroke-width="1.2"/>
+      <text x="15" y="24" font-size="12" font-weight="700" fill="#00E5FF">📸 Memory Lens (Photo Mode)</text>
+      <text x="15" y="44" font-size="9" fill="#E0E0E0">• Rule-of-thirds composition grid</text>
+      <text x="15" y="60" font-size="9" fill="#E0E0E0">• Ornate gold Dhanbad 2026 frame</text>
+      <text x="15" y="76" font-size="9" fill="#E0E0E0">• Live timestamp &amp; district watermark</text>
+      <text x="15" y="96" font-size="10" font-weight="700" fill="#FFD54F">💾 Instant High-Res Postcard Save</text>
+      <text x="15" y="112" font-size="8" fill="#80D8FF">Exports JPEG/PNG to user device</text>
+    </g>
+  </g>
+</svg>
