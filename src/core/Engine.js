@@ -1,4 +1,8 @@
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 export class Engine {
   constructor(container) {
@@ -10,34 +14,55 @@ export class Engine {
       60,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000
+      1200
     );
-    this.camera.position.set(0, 5, 10);
+    this.camera.position.set(0, 4.5, 12);
 
-    // Renderer
+    // Renderer with High Dynamic Range & Soft Shadows
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       powerPreference: 'high-performance',
-      preserveDrawingBuffer: true // Allows screenshot capture for photo mode
+      preserveDrawingBuffer: true
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.05;
+    this.renderer.toneMappingExposure = 1.15;
 
     this.container.appendChild(this.renderer.domElement);
 
-    // Fog for atmospheric depth
-    this.scene.fog = new THREE.FogExp2(0x0c1322, 0.008);
+    // Atmospheric Height Fog
+    this.scene.fog = new THREE.FogExp2(0x0a1020, 0.0075);
 
-    // Clock
-    this.clock = new THREE.Clock();
+    // Unreal Engine 5 Style Post-Processing: Bloom & Tone Mapping
+    this.initPostProcessing();
+
+    // High precision timer
+    this.lastTime = performance.now();
     this.updatables = [];
 
     // Resize listener
     window.addEventListener('resize', () => this.onWindowResize());
+  }
+
+  initPostProcessing() {
+    const renderScene = new RenderPass(this.scene, this.camera);
+
+    this.bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      1.15, // strength
+      0.45, // radius
+      0.82  // threshold
+    );
+
+    const outputPass = new OutputPass();
+
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(renderScene);
+    this.composer.addPass(this.bloomPass);
+    this.composer.addPass(outputPass);
   }
 
   addUpdatable(object) {
@@ -52,16 +77,20 @@ export class Engine {
   }
 
   onWindowResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(width, height);
+    this.composer.setSize(width, height);
   }
 
   start() {
-    const loop = () => {
+    const loop = (now) => {
       requestAnimationFrame(loop);
-      const delta = Math.min(this.clock.getDelta(), 0.1);
-      const time = this.clock.getElapsedTime();
+      const delta = Math.min((now - this.lastTime) / 1000, 0.1);
+      this.lastTime = now;
+      const time = now / 1000;
 
       for (let i = 0; i < this.updatables.length; i++) {
         if (this.updatables[i].update) {
@@ -69,7 +98,7 @@ export class Engine {
         }
       }
 
-      this.renderer.render(this.scene, this.camera);
+      this.composer.render();
     };
 
     requestAnimationFrame(loop);

@@ -4,6 +4,7 @@ import { CentralHub } from './CentralHub.js';
 import { LightTunnel } from './LightTunnel.js';
 import { HousingColonyPandal } from './HousingColonyPandal.js';
 import { MegaMela } from './MegaMela.js';
+import { SkyAtmosphere } from './SkyAtmosphere.js';
 
 export class WorldBuilder {
   constructor(scene, engine, festivalClock) {
@@ -14,20 +15,28 @@ export class WorldBuilder {
     this.collectibles = [];
     this.treeInstances = [];
     this.buntingFlags = [];
+    this.groundRings = [];
 
+    this.initSkyAtmosphere();
     this.initTerrain();
     this.initRoads();
     this.initSubsystems();
     this.initArtisanCourtyard();
     this.initBoundaryAndDecorations();
+    this.initInteractionRings();
+  }
+
+  initSkyAtmosphere() {
+    this.skyAtmosphere = new SkyAtmosphere(this.scene, this.festivalClock);
+    this.engine.addUpdatable(this.skyAtmosphere);
   }
 
   initTerrain() {
-    // Vast ground terrain
-    const terrainGeo = new THREE.PlaneGeometry(240, 240, 32, 32);
+    // Vast ground terrain with subtle roughness
+    const terrainGeo = new THREE.PlaneGeometry(280, 280, 32, 32);
     const terrainMat = new THREE.MeshStandardMaterial({
-      color: 0x181F1A, // Deep twilight festival park ground
-      roughness: 0.9,
+      color: 0x141A16,
+      roughness: 0.95,
       metalness: 0.05
     });
     this.terrain = new THREE.Mesh(terrainGeo, terrainMat);
@@ -40,103 +49,95 @@ export class WorldBuilder {
   initRoads() {
     const roadMat = new THREE.MeshStandardMaterial({
       map: TextureGenerator.createRoadTexture(),
-      roughness: 0.8
+      roughness: 0.75,
+      metalness: 0.15
     });
 
     // 1. North Road: Central Hub (z=0) -> Light Tunnel -> Housing Colony Pandal (z=-65)
-    const northRoadGeo = new THREE.PlaneGeometry(10, 70);
+    const northRoadGeo = new THREE.PlaneGeometry(12, 75);
     const northRoad = new THREE.Mesh(northRoadGeo, roadMat);
     northRoad.rotation.x = -Math.PI / 2;
-    northRoad.position.set(0, 0.01, -35);
+    northRoad.position.set(0, 0.015, -35);
     northRoad.receiveShadow = true;
     this.scene.add(northRoad);
 
     // 2. East Road: Central Hub (x=0) -> Mega Mela (x=45)
-    const eastRoadGeo = new THREE.PlaneGeometry(45, 9);
+    const eastRoadGeo = new THREE.PlaneGeometry(45, 10);
     const eastRoad = new THREE.Mesh(eastRoadGeo, roadMat);
     eastRoad.rotation.x = -Math.PI / 2;
-    eastRoad.position.set(22.5, 0.01, 0);
+    eastRoad.position.set(22.5, 0.015, 0);
     eastRoad.receiveShadow = true;
     this.scene.add(eastRoad);
 
     // 3. West Road: Central Hub -> Artisan Lane / Jharudih (x=-40)
-    const westRoadGeo = new THREE.PlaneGeometry(40, 8);
+    const westRoadGeo = new THREE.PlaneGeometry(40, 9);
     const westRoad = new THREE.Mesh(westRoadGeo, roadMat);
     westRoad.rotation.x = -Math.PI / 2;
-    westRoad.position.set(-20, 0.01, 0);
+    westRoad.position.set(-20, 0.015, 0);
     westRoad.receiveShadow = true;
     this.scene.add(westRoad);
 
     // 4. South Road: Central Hub -> Purana Bazar & Hirapur Heritage Lane (z=40)
-    const southRoadGeo = new THREE.PlaneGeometry(9, 45);
+    const southRoadGeo = new THREE.PlaneGeometry(10, 48);
     const southRoad = new THREE.Mesh(southRoadGeo, roadMat);
     southRoad.rotation.x = -Math.PI / 2;
-    southRoad.position.set(0, 0.01, 22.5);
+    southRoad.position.set(0, 0.015, 24);
     southRoad.receiveShadow = true;
     this.scene.add(southRoad);
   }
 
   initSubsystems() {
-    // Central Festival Hub
     this.centralHub = new CentralHub(this.scene, this.festivalClock);
 
-    // Arched Light Tunnel
     this.lightTunnel = new LightTunnel(this.scene, this.festivalClock);
     this.engine.addUpdatable(this.lightTunnel);
 
-    // Housing Colony Pandal (P0 Hero)
     this.housingPandal = new HousingColonyPandal(this.scene, this.festivalClock);
     this.engine.addUpdatable(this.housingPandal);
 
-    // Mega Mela (Jhula & Rides)
     this.megaMela = new MegaMela(this.scene, this.festivalClock);
     this.engine.addUpdatable(this.megaMela);
   }
 
   initArtisanCourtyard() {
-    // Jharudih Artisan Lane & Craft Courtyard (x = -40, z = 0)
     const artisanGroup = new THREE.Group();
     artisanGroup.position.set(-40, 0, 0);
 
-    // Workshop Pavilion
-    const shedGeo = new THREE.BoxGeometry(16, 5, 12);
-    const shedMat = new THREE.MeshStandardMaterial({ color: 0x5D4037, roughness: 0.8 });
+    const shedGeo = new THREE.BoxGeometry(16, 5.5, 13);
+    const shedMat = new THREE.MeshStandardMaterial({ color: 0x4E342E, roughness: 0.8 });
     const shed = new THREE.Mesh(shedGeo, shedMat);
-    shed.position.set(0, 2.5, -4);
+    shed.position.set(0, 2.75, -4);
     artisanGroup.add(shed);
 
-    // Banner
     const signTex = TextureGenerator.createSignboardTexture(
       'झारूडीह शिल्प वाटिका • JHARUDIH',
       'Artisan Craft Courtyard • Madan da’s Pandal Workshop',
       'gold'
     );
     const sign = new THREE.Mesh(
-      new THREE.PlaneGeometry(12, 2.0),
+      new THREE.PlaneGeometry(12, 2.2),
       new THREE.MeshBasicMaterial({ map: signTex })
     );
-    sign.position.set(0, 5.2, 2.1);
+    sign.position.set(0, 5.5, 2.6);
     artisanGroup.add(sign);
 
-    // Artisan benches & bamboo stacks
     const bambooMat = new THREE.MeshStandardMaterial({ color: 0xAFB42B, roughness: 0.6 });
-    for (let b = 0; b < 6; b++) {
-      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 6, 8), bambooMat);
-      pole.position.set(-6 + b * 0.4, 0.3 + (b % 2) * 0.2, 4);
+    for (let b = 0; b < 8; b++) {
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 6.5, 8), bambooMat);
+      pole.position.set(-6 + b * 0.45, 0.3 + (b % 2) * 0.2, 4.5);
       pole.rotation.z = Math.PI / 2;
       artisanGroup.add(pole);
     }
 
-    // Warm work lamp
-    const workLight = new THREE.PointLight(0xFFB300, 1.4, 15);
-    workLight.position.set(0, 4.2, 0);
-    workLight.userData.baseIntensity = 1.4;
+    const workLight = new THREE.PointLight(0xFFB300, 1.6, 16);
+    workLight.position.set(0, 4.5, 0);
+    workLight.userData.baseIntensity = 1.6;
     this.festivalClock.registerFestivalLight(workLight);
     artisanGroup.add(workLight);
 
     this.scene.add(artisanGroup);
 
-    // 3 Collectible Golden Lotus Bundles for Craft Light Quest
+    // 3 Collectible Golden Lotuses
     this.spawnLotusCollectible(-36, 1.2, 2, 'lotus_1');
     this.spawnLotusCollectible(-42, 1.2, -8, 'lotus_2');
     this.spawnLotusCollectible(-45, 1.2, 5, 'lotus_3');
@@ -146,28 +147,25 @@ export class WorldBuilder {
     const lotusGroup = new THREE.Group();
     lotusGroup.position.set(x, y, z);
 
-    // Glowing Golden Lotus Flower
     const lotusMat = new THREE.MeshStandardMaterial({
       color: 0xFFD54F,
       emissive: 0xFFA000,
-      emissiveIntensity: 1.8,
-      metalness: 0.7,
-      roughness: 0.2
+      emissiveIntensity: 2.2,
+      metalness: 0.8,
+      roughness: 0.15
     });
     this.festivalClock.registerEmissive(lotusMat);
 
-    // 6 Lotus petals
-    for (let p = 0; p < 6; p++) {
-      const angle = (p * Math.PI * 2) / 6;
-      const petal = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.6, 5), lotusMat);
-      petal.position.set(Math.cos(angle) * 0.25, 0.2, Math.sin(angle) * 0.25);
-      petal.rotation.z = Math.cos(angle) * 0.4;
-      petal.rotation.x = Math.sin(angle) * 0.4;
+    for (let p = 0; p < 8; p++) {
+      const angle = (p * Math.PI * 2) / 8;
+      const petal = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.7, 5), lotusMat);
+      petal.position.set(Math.cos(angle) * 0.3, 0.22, Math.sin(angle) * 0.3);
+      petal.rotation.z = Math.cos(angle) * 0.45;
+      petal.rotation.x = Math.sin(angle) * 0.45;
       lotusGroup.add(petal);
     }
 
-    // Hovering point light
-    const itemLight = new THREE.PointLight(0xFFD54F, 0.8, 4);
+    const itemLight = new THREE.PointLight(0xFFD54F, 1.0, 5);
     itemLight.position.y = 0.5;
     lotusGroup.add(itemLight);
 
@@ -182,46 +180,81 @@ export class WorldBuilder {
     });
   }
 
+  initInteractionRings() {
+    // Pulsating 3D Golden Ground Rings marking interactive zones
+    const stations = [
+      { x: 3.5,  z: 4.5,  color: 0x00E5FF, label: 'Aheli' },
+      { x: -36,  z: 0,    color: 0x76FF03, label: 'Madan da' },
+      { x: 49.5, z: 8,    color: 0xFFD54F, label: 'Imran' },
+      { x: 45,   z: 0,    color: 0xFF1744, label: 'Giant Wheel' },
+      { x: 29,   z: 6,    color: 0xE040FB, label: 'Rupa' },
+      { x: 0,    z: 32,   color: 0xFF9100, label: 'Dida' },
+      { x: 0,    z: -71,  color: 0xFFD54F, label: 'Pushpanjali' },
+      { x: 61,   z: -1,   color: 0xE040FB, label: 'Dhak Stage' },
+      { x: 61,   z: 11,   color: 0x00E5FF, label: 'Ring Toss' }
+    ];
+
+    stations.forEach((st) => {
+      const ringGeo = new THREE.RingGeometry(1.6, 1.85, 32);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: st.color,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.8
+      });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.rotation.x = -Math.PI / 2;
+      ring.position.set(st.x, 0.05, st.z);
+      this.scene.add(ring);
+
+      this.groundRings.push({
+        mesh: ring,
+        baseScale: 1.0,
+        color: st.color
+      });
+    });
+  }
+
   initBoundaryAndDecorations() {
-    // Perimeter Festive Trees
     const treeTrunkMat = new THREE.MeshStandardMaterial({ color: 0x3E2723, roughness: 0.9 });
     const leavesMat = new THREE.MeshStandardMaterial({ color: 0x1B5E20, roughness: 0.8 });
 
     const treePositions = [
       [-25, -25], [-15, -45], [15, -45], [25, -25],
       [-20, 25], [20, 25], [-35, 20], [35, 20],
-      [-55, -20], [-55, 20], [60, -25], [60, 25]
+      [-55, -20], [-55, 20], [65, -25], [65, 25],
+      [-22, 10], [22, 10], [-22, -10], [22, -10]
     ];
 
     treePositions.forEach(([tx, tz]) => {
       const tree = new THREE.Group();
       tree.position.set(tx, 0, tz);
 
-      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 4, 8), treeTrunkMat);
-      trunk.position.y = 2;
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.55, 4.2, 8), treeTrunkMat);
+      trunk.position.y = 2.1;
       trunk.castShadow = true;
       tree.add(trunk);
 
-      const foliage = new THREE.Mesh(new THREE.ConeGeometry(2.4, 5.5, 8), leavesMat);
-      foliage.position.y = 5.5;
+      const foliage = new THREE.Mesh(new THREE.ConeGeometry(2.6, 5.8, 8), leavesMat);
+      foliage.position.y = 5.8;
       foliage.castShadow = true;
       tree.add(foliage);
 
       this.scene.add(tree);
     });
 
-    // Festive fluttering triangular bunting flags across the main street
-    const flagGeo = new THREE.ConeGeometry(0.35, 0.6, 3);
-    const flagColors = [0xFF1744, 0xFFEA00, 0x00E5FF, 0x76FF03, 0xD500F9];
-
-    for (let b = 0; b < 24; b++) {
-      const col = flagColors[b % flagColors.length];
-      const flagMat = new THREE.MeshBasicMaterial({ color: col });
-      const flag = new THREE.Mesh(flagGeo, flagMat);
-      flag.rotation.x = Math.PI;
-      flag.position.set((Math.random() - 0.5) * 8, 4.8 + Math.sin(b * 0.5) * 0.3, -5 - b * 2.2);
-      this.scene.add(flag);
-      this.buntingFlags.push(flag);
+    // Hanging street festoon fairy lights crossing overhead from Hub to Tunnel
+    for (let f = 0; f < 18; f++) {
+      const festoonBulb = new THREE.Mesh(
+        new THREE.SphereGeometry(0.18, 8, 8),
+        new THREE.MeshBasicMaterial({ color: f % 2 === 0 ? 0xFFD54F : 0xFF1744 })
+      );
+      festoonBulb.position.set(
+        Math.sin(f * 0.7) * 4.5,
+        5.2 + Math.cos(f * 0.5) * 0.3,
+        -f * 3.5
+      );
+      this.scene.add(festoonBulb);
     }
   }
 
@@ -235,9 +268,11 @@ export class WorldBuilder {
       }
     }
 
-    // Flutter bunting flags
-    for (let i = 0; i < this.buntingFlags.length; i++) {
-      this.buntingFlags[i].rotation.z = Math.sin(time * 4 + i) * 0.2;
+    // Pulsate ground interaction target rings
+    for (let i = 0; i < this.groundRings.length; i++) {
+      const r = this.groundRings[i];
+      const scale = 1.0 + Math.sin(time * 3.5 + i) * 0.15;
+      r.mesh.scale.set(scale, scale, 1);
     }
   }
 }

@@ -1281,6 +1281,7 @@ canvas {
   align-items: center;
   justify-content: center;
   padding: 20px;
+  transition: opacity 0.4s ease;
 }
 
 .intro-content {

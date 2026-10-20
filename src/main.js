@@ -95,16 +95,28 @@ class GameApp {
     // Intro start button
     const btnStart = document.getElementById('btn-start-game');
     const introScreen = document.getElementById('intro-screen');
-    if (btnStart && introScreen) {
-      btnStart.addEventListener('click', () => {
+    const startGame = () => {
+      if (introScreen && introScreen.parentNode) {
         introScreen.style.opacity = '0';
-        setTimeout(() => introScreen.remove(), 400);
+        setTimeout(() => {
+          if (introScreen.parentNode) introScreen.remove();
+        }, 400);
         this.audioDirector.init();
+        this.audioDirector.resumeIfSuspended();
 
         // Welcome voice line in Hindi
         this.hindiVoice.speakText("धनबाद दुर्गा पूजा में आपका स्वागत है। सेंट्रल हब में अहेली से मिलें।");
-      });
+      }
+    };
+
+    if (btnStart) {
+      btnStart.addEventListener('click', startGame);
     }
+    window.addEventListener('keydown', (e) => {
+      if (introScreen && introScreen.parentNode && (e.code === 'Enter' || e.code === 'Space')) {
+        startGame();
+      }
+    });
 
     // Language Toggle Button (Hindi <-> English)
     const btnLang = document.getElementById('btn-lang-toggle');

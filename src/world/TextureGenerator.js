@@ -1,134 +1,129 @@
 import * as THREE from 'three';
 
 export class TextureGenerator {
-  // Traditional Alpona (Floor art)
+  // High-Detail Traditional Bengali Alpona (Floor art)
   static createAlponaTexture() {
-    const size = 512;
+    const size = 1024;
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext('2d');
 
-    // Deep terracotta / red oxide festival floor
-    ctx.fillStyle = '#8B2500';
+    // Rich Terracotta Red Oxide Festival Floor
+    ctx.fillStyle = '#6E1C0A';
     ctx.fillRect(0, 0, size, size);
 
-    // Subtle stone texture
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-    for (let i = 0; i < 2000; i++) {
+    // Stone texture grain
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    for (let i = 0; i < 6000; i++) {
       ctx.fillRect(Math.random() * size, Math.random() * size, 2, 2);
     }
 
-    // White floral rice paste pattern (Alpona)
+    // Sacred White Rice-Paste Artwork (Alpona)
     ctx.strokeStyle = '#FFFFFF';
     ctx.fillStyle = '#FFFFFF';
-    ctx.lineWidth = 4;
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
-    ctx.shadowBlur = 4;
+    ctx.lineWidth = 6;
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
+    ctx.shadowBlur = 6;
 
     const cx = size / 2;
     const cy = size / 2;
 
-    // Concentric circles
-    [40, 80, 130, 180, 230].forEach((r) => {
+    // Outer intricate decorative rings
+    [60, 110, 180, 260, 340, 420, 480].forEach((r, idx) => {
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.lineWidth = idx % 2 === 0 ? 5 : 2;
       ctx.stroke();
     });
 
-    // 8-Petal Lotus in center
-    const petals = 8;
+    // Central 12-Petal Sacred Lotus
+    const petals = 12;
     for (let i = 0; i < petals; i++) {
       const angle = (i * Math.PI * 2) / petals;
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(angle);
 
+      // Lotus petal curve
       ctx.beginPath();
       ctx.moveTo(0, 0);
-      ctx.quadraticCurveTo(25, -60, 0, -80);
-      ctx.quadraticCurveTo(-25, -60, 0, 0);
+      ctx.quadraticCurveTo(35, -90, 0, -140);
+      ctx.quadraticCurveTo(-35, -90, 0, 0);
       ctx.fill();
+
+      // Inner vein line
+      ctx.strokeStyle = '#6E1C0A';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, -110);
+      ctx.stroke();
+
       ctx.restore();
     }
 
-    // Outer Paisley / Conch borders
-    const outerCount = 16;
-    for (let i = 0; i < outerCount; i++) {
-      const angle = (i * Math.PI * 2) / outerCount;
+    // Outer Conch (Shankha) & Paisley Border Motifs
+    const conchCount = 24;
+    for (let i = 0; i < conchCount; i++) {
+      const angle = (i * Math.PI * 2) / conchCount;
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(angle);
 
+      ctx.fillStyle = '#FFFFFF';
       ctx.beginPath();
-      ctx.arc(0, -180, 12, 0, Math.PI * 2);
-      ctx.stroke();
+      ctx.arc(0, -380, 16, 0, Math.PI * 2);
+      ctx.fill();
 
       ctx.beginPath();
-      ctx.arc(0, -210, 6, 0, Math.PI * 2);
+      ctx.arc(0, -440, 9, 0, Math.PI * 2);
       ctx.fill();
+
       ctx.restore();
     }
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
+    texture.anisotropy = 8;
     return texture;
   }
 
-  // Rich Festive Brocade Fabric (for Pandal Interior & Ceiling)
-  static createBrocadeFabricTexture() {
-    const size = 512;
+  // Realistic Wet Asphalt Festival Road with Street Pavers & Curb Stripes
+  static createRoadTexture() {
+    const size = 1024;
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext('2d');
 
-    // Royal Crimson Red Base
-    ctx.fillStyle = '#A31526';
+    // Dark charcoal asphalt
+    ctx.fillStyle = '#181C26';
     ctx.fillRect(0, 0, size, size);
 
-    // Gold zari lattice lines
-    ctx.strokeStyle = '#FFD54F';
-    ctx.lineWidth = 3;
-
-    const step = 64;
-    for (let x = 0; x <= size; x += step) {
-      for (let y = 0; y <= size; y += step) {
-        // Gold motif
-        ctx.fillStyle = '#FFC107';
-        ctx.beginPath();
-        ctx.arc(x, y, 8, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.strokeStyle = 'rgba(255, 213, 79, 0.4)';
-        ctx.strokeRect(x - 20, y - 20, 40, 40);
-      }
+    // Fine tarmac grain
+    for (let i = 0; i < 15000; i++) {
+      ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.35)';
+      ctx.fillRect(Math.random() * size, Math.random() * size, 2, 2);
     }
 
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(4, 4);
-    return texture;
-  }
+    // Wet puddle reflective patches (gloss variation)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
+    for (let p = 0; p < 8; p++) {
+      ctx.beginPath();
+      ctx.ellipse(
+        Math.random() * size, Math.random() * size,
+        60 + Math.random() * 80, 40 + Math.random() * 50,
+        Math.random() * Math.PI, 0, Math.PI * 2
+      );
+      ctx.fill();
+    }
 
-  // Paved festival stone road
-  static createRoadTexture() {
-    const size = 512;
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-
-    // Dark grey asphalt/stone
-    ctx.fillStyle = '#222630';
-    ctx.fillRect(0, 0, size, size);
-
-    // Stone paver lines
-    ctx.strokeStyle = '#161922';
-    ctx.lineWidth = 2;
-    const pSize = 32;
+    // Interlocking street paver lines
+    ctx.strokeStyle = '#0F121A';
+    ctx.lineWidth = 3;
+    const pSize = 64;
     for (let y = 0; y < size; y += pSize) {
       const offset = (y / pSize) % 2 === 0 ? 0 : pSize / 2;
       for (let x = -pSize; x < size + pSize; x += pSize) {
@@ -136,22 +131,70 @@ export class TextureGenerator {
       }
     }
 
-    // Yellow festival curb stripes along edges
-    ctx.fillStyle = '#FFA000';
-    ctx.fillRect(0, 0, 16, size);
-    ctx.fillRect(size - 16, 0, 16, size);
+    // Curb edge stripes (Yellow & Black caution border)
+    const curbW = 32;
+    for (let y = 0; y < size; y += 40) {
+      const isYellow = (y / 40) % 2 === 0;
+      ctx.fillStyle = isYellow ? '#FFB300' : '#111319';
+      ctx.fillRect(0, y, curbW, 40);
+      ctx.fillRect(size - curbW, y, curbW, 40);
+    }
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(6, 40);
+    texture.repeat.set(4, 24);
+    texture.anisotropy = 8;
     return texture;
   }
 
-  // Marigold Garlands (Gendaphool)
+  // Realistic Royal Brocade Fabric for Pandal Ceilings & Walls
+  static createBrocadeFabricTexture() {
+    const size = 512;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+
+    // Royal Crimson Red Silk
+    ctx.fillStyle = '#8B0A1A';
+    ctx.fillRect(0, 0, size, size);
+
+    // Gold zari lattice diamond pattern
+    ctx.strokeStyle = '#FFD54F';
+    ctx.lineWidth = 3;
+
+    const step = 64;
+    for (let x = 0; x <= size; x += step) {
+      for (let y = 0; y <= size; y += step) {
+        // Gold Paisley & Flower medallion
+        ctx.fillStyle = '#FFA000';
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#FFF176';
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Diamond lattice
+        ctx.strokeStyle = 'rgba(255, 213, 79, 0.45)';
+        ctx.strokeRect(x - 22, y - 22, 44, 44);
+      }
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(6, 6);
+    return texture;
+  }
+
+  // Marigold Garlands (Gendaphool) with layered petals
   static createMarigoldTexture() {
-    const w = 256;
-    const h = 64;
+    const w = 512;
+    const h = 128;
     const canvas = document.createElement('canvas');
     canvas.width = w;
     canvas.height = h;
@@ -159,22 +202,29 @@ export class TextureGenerator {
 
     ctx.clearRect(0, 0, w, h);
 
-    const flowers = 8;
+    const flowers = 10;
     const step = w / flowers;
     for (let i = 0; i < flowers; i++) {
       const cx = i * step + step / 2;
       const cy = h / 2;
       const isOrange = i % 2 === 0;
 
-      ctx.fillStyle = isOrange ? '#FF6F00' : '#FFD54F';
-      ctx.beginPath();
-      ctx.arc(cx, cy, 18, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Flower petals texture
+      // Outer petals
       ctx.fillStyle = isOrange ? '#E65100' : '#FFA000';
       ctx.beginPath();
-      ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 32, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Middle petals
+      ctx.fillStyle = isOrange ? '#FB8C00' : '#FFD54F';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Center core
+      ctx.fillStyle = isOrange ? '#FFB300' : '#FFF9C4';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 10, 0, Math.PI * 2);
       ctx.fill();
     }
 
@@ -184,7 +234,7 @@ export class TextureGenerator {
     return texture;
   }
 
-  // Signboard / Banner
+  // Realistic Ornate Signboard Texture
   static createSignboardTexture(title, subtitle, colorScheme = 'gold') {
     const width = 1024;
     const height = 256;
@@ -193,42 +243,42 @@ export class TextureGenerator {
     canvas.height = height;
     const ctx = canvas.getContext('2d');
 
-    // Gradient background
+    // Deep gradient background
     const grad = ctx.createLinearGradient(0, 0, width, height);
     if (colorScheme === 'gold') {
-      grad.addColorStop(0, '#7A141A');
-      grad.addColorStop(0.5, '#4A0D10');
-      grad.addColorStop(1, '#7A141A');
+      grad.addColorStop(0, '#6A0C14');
+      grad.addColorStop(0.5, '#38060B');
+      grad.addColorStop(1, '#6A0C14');
     } else {
-      grad.addColorStop(0, '#0D1B2A');
-      grad.addColorStop(0.5, '#1B263B');
-      grad.addColorStop(1, '#0D1B2A');
+      grad.addColorStop(0, '#0A182E');
+      grad.addColorStop(0.5, '#122544');
+      grad.addColorStop(1, '#0A182E');
     }
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);
 
-    // Ornate gold border
+    // Dual Gold Border
     ctx.strokeStyle = '#FFD54F';
-    ctx.lineWidth = 10;
+    ctx.lineWidth = 8;
     ctx.strokeRect(10, 10, width - 20, height - 20);
 
     ctx.strokeStyle = '#FFA000';
     ctx.lineWidth = 3;
     ctx.strokeRect(22, 22, width - 44, height - 44);
 
-    // Main text
+    // Title
     ctx.fillStyle = '#FFD54F';
-    ctx.font = 'bold 54px "Cinzel", Georgia, serif';
+    ctx.font = 'bold 50px "Cinzel", "Yatra One", serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-    ctx.shadowBlur = 10;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+    ctx.shadowBlur = 14;
     ctx.fillText(title, width / 2, height / 2 - 24);
 
     // Subtitle
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = '500 28px "Plus Jakarta Sans", sans-serif';
-    ctx.fillText(subtitle, width / 2, height / 2 + 38);
+    ctx.font = '600 24px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText(subtitle, width / 2, height / 2 + 36);
 
     const texture = new THREE.CanvasTexture(canvas);
     return texture;

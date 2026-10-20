@@ -54,8 +54,12 @@ export class PhotoMode {
     this.audioDirector.playCameraShutter();
     this.hud.triggerScreenFlash();
 
-    // Render 1 frame cleanly
-    this.engine.renderer.render(this.engine.scene, this.engine.camera);
+    // Render 1 frame cleanly through composer
+    if (this.engine.composer) {
+      this.engine.composer.render();
+    } else {
+      this.engine.renderer.render(this.engine.scene, this.engine.camera);
+    }
 
     // Get 3D canvas
     const webglCanvas = this.engine.renderer.domElement;
@@ -93,7 +97,7 @@ export class PhotoMode {
 
     // Watermark Branding
     ctx.fillStyle = '#FFD54F';
-    ctx.font = 'bold 36px "Cinzel", Georgia, serif';
+    ctx.font = 'bold 36px "Cinzel", "Yatra One", Georgia, serif';
     ctx.shadowColor = 'rgba(0,0,0,0.85)';
     ctx.shadowBlur = 12;
     ctx.fillText('DHANBAD DURGA PUJA 2026', 44, postHeight - 64);

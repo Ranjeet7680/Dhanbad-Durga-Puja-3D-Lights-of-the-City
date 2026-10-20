@@ -11,15 +11,16 @@ export class MegaMela {
     this.scene.add(this.group);
 
     // Ferris Wheel elements
-    this.wheelRadius = 14;
-    this.wheelCenterHeight = 17;
+    this.wheelRadius = 15;
+    this.wheelCenterHeight = 18;
     this.gondolas = [];
-    this.wheelRotationSpeed = 0.25; // Radians per sec
+    this.wheelNeonBulbs = [];
+    this.wheelRotationSpeed = 0.28;
     this.wheelAngle = 0;
     this.isRideActive = false;
 
     // Carousel elements
-    this.carouselSpeed = 0.5;
+    this.carouselSpeed = 0.55;
     this.carouselHorses = [];
 
     this.buildGroundPlaza();
@@ -31,10 +32,10 @@ export class MegaMela {
   }
 
   buildGroundPlaza() {
-    // Mela grounds floor (packed earth / festive ground)
-    const melaFloorGeo = new THREE.PlaneGeometry(60, 50);
+    // Mela grounds floor (packed earth / festival ground)
+    const melaFloorGeo = new THREE.PlaneGeometry(65, 55);
     const melaFloorMat = new THREE.MeshStandardMaterial({
-      color: 0x33251B,
+      color: 0x2A1C14,
       roughness: 0.95
     });
     const melaFloor = new THREE.Mesh(melaFloorGeo, melaFloorMat);
@@ -46,21 +47,21 @@ export class MegaMela {
     // Mela Welcome Arch
     const archTex = TextureGenerator.createSignboardTexture(
       '🎡 धनबाद मेगा मेला 🎡',
-      'Mega Fairground • Jhula, Games, Food & Joy',
+      'DHANBAD MEGA FAIRGROUND • JHULA, GAMES & FOOD',
       'gold'
     );
-    const signGeo = new THREE.PlaneGeometry(12, 2.4);
+    const signGeo = new THREE.PlaneGeometry(13, 2.6);
     const signMat = new THREE.MeshBasicMaterial({ map: archTex });
     const sign = new THREE.Mesh(signGeo, signMat);
-    sign.position.set(-20, 6.5, 0);
+    sign.position.set(-22, 7.0, 0);
     sign.rotation.y = Math.PI / 2;
     this.group.add(sign);
 
-    // Two entry pillars for Mela
-    const pillarMat = new THREE.MeshStandardMaterial({ color: 0xFFB300, roughness: 0.5 });
-    [-5, 5].forEach((pz) => {
-      const p = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 7, 12), pillarMat);
-      p.position.set(-20, 3.5, pz);
+    // Two Entry Pillars with Golden Cones
+    const pillarMat = new THREE.MeshStandardMaterial({ color: 0xFFB300, roughness: 0.4, metalness: 0.6 });
+    [-6, 6].forEach((pz) => {
+      const p = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.7, 7.5, 12), pillarMat);
+      p.position.set(-22, 3.75, pz);
       this.group.add(p);
     });
   }
@@ -69,63 +70,98 @@ export class MegaMela {
     this.wheelGroup = new THREE.Group();
     this.wheelGroup.position.set(0, 0, -12);
 
-    // Two A-Frame Support Towers (Steel lattice)
+    // Two A-Frame Support Towers (Steel lattice truss look)
     const steelMat = new THREE.MeshStandardMaterial({
-      color: 0xD32F2F, // Festive crimson steel
-      metalness: 0.7,
-      roughness: 0.3
+      color: 0xC62828, // Bright fairground crimson steel
+      metalness: 0.8,
+      roughness: 0.25
     });
 
-    [-2.2, 2.2].forEach((zOffset) => {
-      // Left leg
-      const legGeo = new THREE.CylinderGeometry(0.2, 0.35, 19, 8);
+    [-2.4, 2.4].forEach((zOffset) => {
+      const legGeo = new THREE.CylinderGeometry(0.24, 0.4, 20.5, 8);
       const leftLeg = new THREE.Mesh(legGeo, steelMat);
-      leftLeg.position.set(-4.5, 9, zOffset);
+      leftLeg.position.set(-4.8, 10, zOffset);
       leftLeg.rotation.z = -0.24;
       this.wheelGroup.add(leftLeg);
 
-      // Right leg
       const rightLeg = new THREE.Mesh(legGeo, steelMat);
-      rightLeg.position.set(4.5, 9, zOffset);
+      rightLeg.position.set(4.8, 10, zOffset);
       rightLeg.rotation.z = 0.24;
       this.wheelGroup.add(rightLeg);
+
+      // Cross braces between legs
+      [5, 10, 15].forEach((h) => {
+        const brace = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.12, 0.12, 5.5, 6),
+          steelMat
+        );
+        brace.position.set(0, h, zOffset);
+        brace.rotation.z = Math.PI / 2;
+        this.wheelGroup.add(brace);
+      });
     });
 
     // Central Axle
-    const axleGeo = new THREE.CylinderGeometry(0.5, 0.5, 5.2, 16);
+    const axleGeo = new THREE.CylinderGeometry(0.6, 0.6, 5.6, 16);
     const axleMat = new THREE.MeshStandardMaterial({ color: 0xFFD54F, metalness: 0.9, roughness: 0.2 });
     const axle = new THREE.Mesh(axleGeo, axleMat);
     axle.rotation.x = Math.PI / 2;
     axle.position.set(0, this.wheelCenterHeight, 0);
     this.wheelGroup.add(axle);
 
-    // The Rotating Wheel Structure
+    // Rotating Wheel Structure
     this.rotatingWheel = new THREE.Group();
     this.rotatingWheel.position.set(0, this.wheelCenterHeight, 0);
 
-    // Two concentric outer rims
-    const rimMat = new THREE.MeshStandardMaterial({ color: 0xFFD54F, metalness: 0.8, roughness: 0.2 });
-    [-1.6, 1.6].forEach((zOffset) => {
-      const rimGeo = new THREE.TorusGeometry(this.wheelRadius, 0.22, 12, 48);
+    const rimMat = new THREE.MeshStandardMaterial({ color: 0xFFD54F, metalness: 0.85, roughness: 0.2 });
+    [-1.8, 1.8].forEach((zOffset) => {
+      const rimGeo = new THREE.TorusGeometry(this.wheelRadius, 0.25, 12, 48);
       const rim = new THREE.Mesh(rimGeo, rimMat);
       rim.position.z = zOffset;
       this.rotatingWheel.add(rim);
 
-      const innerRimGeo = new THREE.TorusGeometry(this.wheelRadius * 0.65, 0.16, 8, 36);
+      const innerRimGeo = new THREE.TorusGeometry(this.wheelRadius * 0.65, 0.18, 8, 36);
       const innerRim = new THREE.Mesh(innerRimGeo, rimMat);
       innerRim.position.z = zOffset;
       this.rotatingWheel.add(innerRim);
     });
 
-    // 12 Spokes with Neon LED strips
+    // 12 Spokes with Neon LED Bulbs
     const spokeCount = 12;
-    const spokeGeo = new THREE.CylinderGeometry(0.08, 0.08, this.wheelRadius * 2, 8);
-    const spokeMat = new THREE.MeshStandardMaterial({ color: 0xEEEEEE, metalness: 0.8, roughness: 0.3 });
+    const spokeGeo = new THREE.CylinderGeometry(0.09, 0.09, this.wheelRadius * 2, 8);
+    const spokeMat = new THREE.MeshStandardMaterial({ color: 0xEEEEEE, metalness: 0.85, roughness: 0.3 });
 
     for (let i = 0; i < spokeCount / 2; i++) {
       const spoke = new THREE.Mesh(spokeGeo, spokeMat);
       spoke.rotation.z = (i * Math.PI) / (spokeCount / 2);
       this.rotatingWheel.add(spoke);
+    }
+
+    // Glowing Neon Nodes along Spokes and Outer Rims
+    const neonColors = [0x00E5FF, 0xFF1744, 0x76FF03, 0xFFEA00, 0xE040FB, 0xFF9100];
+    const bulbGeo = new THREE.SphereGeometry(0.18, 8, 8);
+
+    for (let i = 0; i < spokeCount; i++) {
+      const angle = (i * Math.PI * 2) / spokeCount;
+      const col = neonColors[i % neonColors.length];
+      const bulbMat = new THREE.MeshStandardMaterial({
+        color: col,
+        emissive: col,
+        emissiveIntensity: 2.2
+      });
+      this.festivalClock.registerEmissive(bulbMat);
+
+      // 3 bulbs along each spoke radius
+      [0.4, 0.7, 0.95].forEach((frac) => {
+        const b = new THREE.Mesh(bulbGeo, bulbMat);
+        b.position.set(
+          Math.cos(angle) * this.wheelRadius * frac,
+          Math.sin(angle) * this.wheelRadius * frac,
+          1.8
+        );
+        this.rotatingWheel.add(b);
+        this.wheelNeonBulbs.push({ mesh: b, offset: i * 0.5 + frac });
+      });
     }
 
     // 12 Passenger Gondolas
@@ -144,18 +180,23 @@ export class MegaMela {
         0
       );
 
-      // Gondola cabin
-      const cabinGeo = new THREE.BoxGeometry(2.0, 1.8, 2.2);
+      // Cabin
+      const cabinGeo = new THREE.BoxGeometry(2.2, 1.9, 2.4);
       const cabin = new THREE.Mesh(cabinGeo, gondolaMat);
-      cabin.position.y = -0.9;
+      cabin.position.y = -0.95;
       gondolaPivot.add(cabin);
 
       // Canopy roof
-      const roofGeo = new THREE.ConeGeometry(1.6, 0.8, 4);
+      const roofGeo = new THREE.ConeGeometry(1.7, 0.9, 4);
       const roof = new THREE.Mesh(roofGeo, rimMat);
-      roof.position.y = 0.4;
+      roof.position.y = 0.45;
       roof.rotation.y = Math.PI / 4;
       gondolaPivot.add(roof);
+
+      // Warm interior cabin lantern
+      const cabLight = new THREE.PointLight(0xFFE082, 0.8, 4);
+      cabLight.position.y = -0.5;
+      gondolaPivot.add(cabLight);
 
       this.rotatingWheel.add(gondolaPivot);
       this.gondolas.push(gondolaPivot);
@@ -163,31 +204,39 @@ export class MegaMela {
 
     this.wheelGroup.add(this.rotatingWheel);
 
-    // Boarding Platform
-    const platformGeo = new THREE.BoxGeometry(6, 1.8, 5);
+    // Boarding Platform with Safety Railings & Boarding Stairs
+    const platformGeo = new THREE.BoxGeometry(6.5, 1.8, 5.5);
     const platformMat = new THREE.MeshStandardMaterial({ color: 0x4E342E, roughness: 0.8 });
     const platform = new THREE.Mesh(platformGeo, platformMat);
     platform.position.set(0, 0.9, 0);
     this.wheelGroup.add(platform);
 
-    // Platform Safety Railings
-    const railMat = new THREE.MeshStandardMaterial({ color: 0xFFB300 });
-    const railGeo = new THREE.BoxGeometry(5.8, 0.9, 0.1);
-    const rail = new THREE.Mesh(railGeo, railMat);
-    rail.position.set(0, 2.25, 2.4);
+    const railMat = new THREE.MeshStandardMaterial({ color: 0xFFB300, metalness: 0.8 });
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(6.3, 0.9, 0.1), railMat);
+    rail.position.set(0, 2.25, 2.6);
     this.wheelGroup.add(rail);
 
+    // Boarding Stairs
+    for (let st = 0; st < 4; st++) {
+      const stair = new THREE.Mesh(
+        new THREE.BoxGeometry(4.0, 0.22, 0.6),
+        platformMat
+      );
+      stair.position.set(0, st * 0.22 + 0.11, 2.9 + st * 0.6);
+      this.wheelGroup.add(stair);
+    }
+
     // Ride Operator Booth (Imran's station)
-    const boothGeo = new THREE.BoxGeometry(2.2, 2.6, 2.2);
+    const boothGeo = new THREE.BoxGeometry(2.4, 2.8, 2.4);
     const boothMat = new THREE.MeshStandardMaterial({ color: 0x0277BD, roughness: 0.6 });
     const booth = new THREE.Mesh(boothGeo, boothMat);
-    booth.position.set(4.5, 1.3, 3);
+    booth.position.set(5.2, 1.4, 3.5);
     this.wheelGroup.add(booth);
 
-    // Festive illumination for the wheel
-    const melaSpot = new THREE.PointLight(0xFFAB00, 2.0, 35);
-    melaSpot.position.set(0, this.wheelCenterHeight, 8);
-    melaSpot.userData.baseIntensity = 2.0;
+    // Wheel Fairground Spotlight
+    const melaSpot = new THREE.PointLight(0xFFAB00, 2.4, 40);
+    melaSpot.position.set(0, this.wheelCenterHeight, 10);
+    melaSpot.userData.baseIntensity = 2.4;
     this.festivalClock.registerFestivalLight(melaSpot);
     this.wheelGroup.add(melaSpot);
 
@@ -198,28 +247,27 @@ export class MegaMela {
     this.carouselGroup = new THREE.Group();
     this.carouselGroup.position.set(0, 0, 16);
 
-    // Rotating platform
     this.carouselDeck = new THREE.Group();
 
-    // Round floor
-    const deckGeo = new THREE.CylinderGeometry(6, 6.2, 0.6, 24);
+    // Round Floor
+    const deckGeo = new THREE.CylinderGeometry(6.4, 6.6, 0.6, 24);
     const deckMat = new THREE.MeshStandardMaterial({ color: 0x880E4F, roughness: 0.6 });
     const deck = new THREE.Mesh(deckGeo, deckMat);
     deck.position.y = 0.3;
     this.carouselDeck.add(deck);
 
-    // Center ornate mirrored pillar
-    const centerPillarGeo = new THREE.CylinderGeometry(1.4, 1.4, 4.5, 16);
+    // Center Ornate Mirrored Pillar
+    const centerPillarGeo = new THREE.CylinderGeometry(1.5, 1.5, 4.8, 16);
     const pillarMat = new THREE.MeshStandardMaterial({ color: 0xFFD54F, metalness: 0.9, roughness: 0.1 });
     const centerPillar = new THREE.Mesh(centerPillarGeo, pillarMat);
-    centerPillar.position.y = 2.5;
+    centerPillar.position.y = 2.7;
     this.carouselDeck.add(centerPillar);
 
-    // Top Striped Canopy
-    const canopyGeo = new THREE.ConeGeometry(7, 2.2, 24);
+    // Striped Pagoda Canopy Roof
+    const canopyGeo = new THREE.ConeGeometry(7.5, 2.4, 24);
     const canopyMat = new THREE.MeshStandardMaterial({ color: 0xFFC107, roughness: 0.4 });
     const canopy = new THREE.Mesh(canopyGeo, canopyMat);
-    canopy.position.y = 5.2;
+    canopy.position.y = 5.5;
     this.carouselDeck.add(canopy);
 
     // 6 Wooden Festival Horses / Seats
@@ -227,27 +275,26 @@ export class MegaMela {
     for (let i = 0; i < horseCount; i++) {
       const angle = (i * Math.PI * 2) / horseCount;
       const horseGroup = new THREE.Group();
-      horseGroup.position.set(Math.cos(angle) * 4.2, 1.8, Math.sin(angle) * 4.2);
+      horseGroup.position.set(Math.cos(angle) * 4.4, 1.9, Math.sin(angle) * 4.4);
       horseGroup.rotation.y = -angle + Math.PI / 2;
 
       // Brass pole
       const pole = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.06, 0.06, 3.8, 8),
+        new THREE.CylinderGeometry(0.07, 0.07, 4.0, 8),
         new THREE.MeshStandardMaterial({ color: 0xFFD54F, metalness: 0.9 })
       );
       horseGroup.add(pole);
 
       // Stylized festival horse body
       const body = new THREE.Mesh(
-        new THREE.BoxGeometry(0.8, 0.6, 1.6),
+        new THREE.BoxGeometry(0.85, 0.65, 1.7),
         new THREE.MeshStandardMaterial({ color: 0xE65100, roughness: 0.5 })
       );
-      body.position.y = 0;
       horseGroup.add(body);
 
       this.carouselHorses.push({
         group: horseGroup,
-        baseY: 1.8,
+        baseY: 1.9,
         offset: i * 1.2
       });
 
@@ -259,7 +306,6 @@ export class MegaMela {
   }
 
   buildFoodLane() {
-    // 3 Food stalls with striped awnings
     const stalls = [
       { name: 'KOLKATA PUCHKA & CHAAT', sub: 'Spicy Tamarind Water & Crispy Puris', x: -16, z: -4 },
       { name: 'GARAM JALEBI & MITHAI', sub: 'Golden Crispy Jalebis & Rabri', x: -16, z: 6 },
@@ -270,34 +316,31 @@ export class MegaMela {
       const stall = new THREE.Group();
       stall.position.set(s.x, 0, s.z);
 
-      // Counter
-      const counterGeo = new THREE.BoxGeometry(4.2, 1.2, 2.2);
+      const counterGeo = new THREE.BoxGeometry(4.4, 1.2, 2.4);
       const counterMat = new THREE.MeshStandardMaterial({ color: 0x5D4037, roughness: 0.8 });
       const counter = new THREE.Mesh(counterGeo, counterMat);
       counter.position.y = 0.6;
       stall.add(counter);
 
-      // Signboard
       const signTex = TextureGenerator.createSignboardTexture(s.name, s.sub, 'gold');
       const sign = new THREE.Mesh(
-        new THREE.PlaneGeometry(4.0, 1.0),
+        new THREE.PlaneGeometry(4.2, 1.05),
         new THREE.MeshBasicMaterial({ map: signTex })
       );
-      sign.position.set(0, 3.2, 1.15);
+      sign.position.set(0, 3.3, 1.25);
       stall.add(sign);
 
-      // Striped Awning
-      const awningGeo = new THREE.BoxGeometry(4.4, 0.2, 2.6);
+      const awningGeo = new THREE.BoxGeometry(4.6, 0.2, 2.8);
       const awningMat = new THREE.MeshStandardMaterial({ color: 0xC2185B, roughness: 0.6 });
       const awning = new THREE.Mesh(awningGeo, awningMat);
-      awning.position.set(0, 3.1, 0);
+      awning.position.set(0, 3.2, 0);
       awning.rotation.x = 0.15;
       stall.add(awning);
 
       // Warm Stall Light
-      const sLight = new THREE.PointLight(0xFFB300, 1.2, 8);
-      sLight.position.set(0, 2.8, 0);
-      sLight.userData.baseIntensity = 1.2;
+      const sLight = new THREE.PointLight(0xFFB300, 1.3, 9);
+      sLight.position.set(0, 2.9, 0);
+      sLight.userData.baseIntensity = 1.3;
       this.festivalClock.registerFestivalLight(sLight);
       stall.add(sLight);
 
@@ -306,52 +349,48 @@ export class MegaMela {
   }
 
   buildGameStall() {
-    // Ring Toss / Target stall
     const stall = new THREE.Group();
     stall.position.set(16, 0, 6);
 
     const booth = new THREE.Mesh(
-      new THREE.BoxGeometry(5, 3.2, 3),
+      new THREE.BoxGeometry(5.2, 3.4, 3.2),
       new THREE.MeshStandardMaterial({ color: 0x00695C, roughness: 0.7 })
     );
-    booth.position.y = 1.6;
+    booth.position.y = 1.7;
     stall.add(booth);
 
     const signTex = TextureGenerator.createSignboardTexture('🎯 RING TOSS FESTIVAL STALL', 'Win Festive Souvenirs & Tokens', 'blue');
-    const sign = new THREE.Mesh(new THREE.PlaneGeometry(4.5, 1.0), new THREE.MeshBasicMaterial({ map: signTex }));
-    sign.position.set(0, 3.5, 1.55);
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 1.05), new THREE.MeshBasicMaterial({ map: signTex }));
+    sign.position.set(0, 3.6, 1.65);
     stall.add(sign);
 
     this.group.add(stall);
   }
 
   buildDhakStage() {
-    // Dhak drumming platform
     const stage = new THREE.Group();
     stage.position.set(16, 0, -6);
 
     const platform = new THREE.Mesh(
-      new THREE.CylinderGeometry(3.5, 3.8, 0.8, 16),
+      new THREE.CylinderGeometry(3.6, 4.0, 0.85, 16),
       new THREE.MeshStandardMaterial({ color: 0xBF360C, roughness: 0.6 })
     );
-    platform.position.y = 0.4;
+    platform.position.y = 0.42;
     stage.add(platform);
 
-    // Dhak drum prop on stage
     const drum = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.5, 0.5, 1.4, 16),
+      new THREE.CylinderGeometry(0.55, 0.55, 1.5, 16),
       new THREE.MeshStandardMaterial({ color: 0x4E342E, roughness: 0.5 })
     );
     drum.rotation.z = Math.PI / 2;
-    drum.position.set(0, 1.2, 0);
+    drum.position.set(0, 1.25, 0);
     stage.add(drum);
 
-    // Decorative white feathers (Kash Phool) on the drum
     const feather = new THREE.Mesh(
-      new THREE.ConeGeometry(0.3, 1.2, 6),
+      new THREE.ConeGeometry(0.35, 1.3, 6),
       new THREE.MeshBasicMaterial({ color: 0xFFFFFF })
     );
-    feather.position.set(0.6, 1.8, 0);
+    feather.position.set(0.65, 1.85, 0);
     stage.add(feather);
 
     this.group.add(stage);
@@ -362,24 +401,29 @@ export class MegaMela {
     this.wheelAngle += this.wheelRotationSpeed * delta;
     this.rotatingWheel.rotation.z = this.wheelAngle;
 
-    // Correct each gondola's angle so it hangs upright due to gravity
+    // Gravity compensation for gondolas
     for (let i = 0; i < this.gondolas.length; i++) {
       this.gondolas[i].rotation.z = -this.wheelAngle;
     }
 
-    // Rotate Carousel deck
+    // Dynamic chasing wave on neon rim bulbs
+    for (let i = 0; i < this.wheelNeonBulbs.length; i++) {
+      const nb = this.wheelNeonBulbs[i];
+      const intensity = 0.7 + 0.5 * Math.sin(time * 6 + nb.offset);
+      nb.mesh.scale.setScalar(intensity);
+    }
+
+    // Rotate Carousel
     this.carouselDeck.rotation.y += this.carouselSpeed * delta;
 
-    // Bob carousel horses up and down
+    // Bob carousel horses
     for (let i = 0; i < this.carouselHorses.length; i++) {
       const h = this.carouselHorses[i];
       h.group.position.y = h.baseY + Math.sin(time * 3 + h.offset) * 0.35;
     }
   }
 
-  // Get position of lowest gondola for boarding
   getBoardingGondolaPosition() {
-    // Lowest gondola index closest to bottom (angle ~ -PI/2)
     const normAngle = (this.wheelAngle + Math.PI / 2) % (Math.PI * 2);
     const lowestIdx = Math.round((normAngle / (Math.PI * 2)) * 12) % 12;
     const targetGondola = this.gondolas[lowestIdx];
