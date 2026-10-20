@@ -1,89 +1,87 @@
+import { Localization } from '../core/Localization.js';
+
 export class QuestManager {
-  constructor(saveManager, audioDirector, hud) {
+  constructor(saveManager, audioDirector, hud, hindiVoice) {
     this.saveManager = saveManager;
     this.audioDirector = audioDirector;
     this.hud = hud;
-
-    this.quests = {
-      1: {
-        id: 'qst_welcome',
-        lightName: '🌟 Welcome Light',
-        title: 'Arrival in Dhanbad',
-        objective: 'Meet Aheli at the Central Festival Hub to receive your Pandal Passport.',
-        npcId: 'npc_aheli',
-        completed: this.saveManager.data.lights.welcome,
-        tokens: 50,
-        stampKey: 'hub'
-      },
-      2: {
-        id: 'qst_craft',
-        lightName: '🪷 Craft Light',
-        title: 'Artisan Traditions of Jharudih',
-        objective: 'Find 3 Golden Lotus bundles scattered around the Jharudih craft workshop.',
-        npcId: 'npc_madan',
-        targetCount: 3,
-        currentCount: 0,
-        completed: this.saveManager.data.lights.craft,
-        tokens: 100,
-        stampKey: 'artisan_lane'
-      },
-      3: {
-        id: 'qst_courage',
-        lightName: '🎡 Courage of the Sky',
-        title: 'Panorama of the Mega Mela',
-        objective: 'Head East to the Mega Mela and ride the Giant Wheel (Jhula) with Imran.',
-        npcId: 'npc_imran',
-        completed: this.saveManager.data.lights.courage,
-        tokens: 100,
-        stampKey: 'mega_mela'
-      },
-      4: {
-        id: 'qst_community',
-        lightName: '🍯 Community Flavours',
-        title: 'Mela Sweets & Volunteers',
-        objective: 'Collect festival jalebis from Rupa at the Food Lane and deliver to the Hub kiosk.',
-        npcId: 'npc_rupa',
-        hasSweets: false,
-        completed: this.saveManager.data.lights.community,
-        tokens: 100,
-        stampKey: 'housing_pandal'
-      },
-      5: {
-        id: 'qst_home',
-        lightName: '🏮 Home Light',
-        title: 'Memories of Dhanbad',
-        objective: 'Speak with Dida near Heritage Lane to complete the oral chronicle and light the 5th Lantern.',
-        npcId: 'npc_dida',
-        completed: this.saveManager.data.lights.home,
-        tokens: 250,
-        stampKey: 'heritage_lane'
-      }
-    };
+    this.hindiVoice = hindiVoice;
 
     this.currentChapter = this.saveManager.data.currentChapter;
+    this.craftCurrentCount = 0;
+    this.craftTargetCount = 3;
+
     this.updateHUD();
   }
 
-  getCurrentQuest() {
-    return this.quests[this.currentChapter] || this.quests[5];
+  getCurrentQuestData() {
+    const isHi = Localization.currentLang === 'hi';
+    const c = this.currentChapter;
+
+    if (this.isAllCompleted()) {
+      return {
+        tag: Localization.t('qCompletedTag'),
+        counter: isHi ? '5/5 पूर्ण' : '5/5 Complete',
+        title: Localization.t('qCompletedTitle'),
+        desc: Localization.t('qCompletedDesc')
+      };
+    }
+
+    if (c === 1) {
+      return {
+        tag: Localization.t('q1Tag'),
+        counter: isHi ? 'अध्याय 1/5' : 'Chapter 1/5',
+        title: Localization.t('q1Title'),
+        desc: Localization.t('q1Desc'),
+        tokens: 50,
+        stampKey: 'hub'
+      };
+    } else if (c === 2) {
+      const desc = isHi
+        ? `झारूडीह शिल्प वाटिका में खोए 3 स्वर्ण कमल ढूंढें (${this.craftCurrentCount}/3)`
+        : `Find 3 Golden Lotus bundles in Jharudih craft lane (${this.craftCurrentCount}/3)`;
+      return {
+        tag: Localization.t('q2Tag'),
+        counter: isHi ? 'अध्याय 2/5' : 'Chapter 2/5',
+        title: Localization.t('q2Title'),
+        desc: desc,
+        tokens: 100,
+        stampKey: 'artisan_lane'
+      };
+    } else if (c === 3) {
+      return {
+        tag: Localization.t('q3Tag'),
+        counter: isHi ? 'अध्याय 3/5' : 'Chapter 3/5',
+        title: Localization.t('q3Title'),
+        desc: Localization.t('q3Desc'),
+        tokens: 100,
+        stampKey: 'mega_mela'
+      };
+    } else if (c === 4) {
+      return {
+        tag: Localization.t('q4Tag'),
+        counter: isHi ? 'अध्याय 4/5' : 'Chapter 4/5',
+        title: Localization.t('q4Title'),
+        desc: Localization.t('q4Desc'),
+        tokens: 100,
+        stampKey: 'housing_pandal'
+      };
+    } else {
+      return {
+        tag: Localization.t('q5Tag'),
+        counter: isHi ? 'अध्याय 5/5' : 'Chapter 5/5',
+        title: Localization.t('q5Title'),
+        desc: Localization.t('q5Desc'),
+        tokens: 250,
+        stampKey: 'heritage_lane'
+      };
+    }
   }
 
   updateHUD() {
-    const q = this.getCurrentQuest();
+    const q = this.getCurrentQuestData();
     if (this.hud) {
-      if (this.isAllCompleted()) {
-        this.hud.updateObjective(
-          '🏆 Festival Champion',
-          'All 5 Lights Restored!',
-          'You have lit the Five Lights of Dhanbad! Explore freely, take photos, and celebrate.'
-        );
-      } else {
-        this.hud.updateObjective(
-          q.lightName,
-          `Chapter ${this.currentChapter}/5`,
-          q.objective
-        );
-      }
+      this.hud.updateObjective(q.tag, q.counter, q.desc);
     }
   }
 
@@ -92,23 +90,30 @@ export class QuestManager {
   }
 
   progressCraftCollect() {
-    const q = this.quests[2];
-    q.currentCount++;
-    if (q.currentCount >= q.targetCount) {
-      this.hud.showToast(`Found all 3 Lotuses! Return to Madan da.`);
-      q.objective = 'All 3 Lotuses collected! Speak with Madan da to assemble the Craft Light.';
+    this.craftCurrentCount++;
+    const isHi = Localization.currentLang === 'hi';
+
+    if (this.craftCurrentCount >= this.craftTargetCount) {
+      const msg = isHi
+        ? 'तीनों स्वर्ण कमल मिल गए! मदन दा के पास लौटें।'
+        : 'Found all 3 Lotuses! Return to Madan da.';
+      this.hud.showToast(msg);
+      if (this.hindiVoice) {
+        this.hindiVoice.speakText(isHi ? "तीनों स्वर्ण कमल मिल गए! मदन दा के पास चलिए।" : "Found all 3 Lotuses!");
+      }
     } else {
-      this.hud.showToast(`Collected Golden Lotus (${q.currentCount}/${q.targetCount})`);
-      q.objective = `Find remaining Golden Lotuses (${q.currentCount}/${q.targetCount}) in Jharudih craft lane.`;
+      const msg = isHi
+        ? `स्वर्ण कमल प्राप्त हुआ (${this.craftCurrentCount}/3)`
+        : `Collected Golden Lotus (${this.craftCurrentCount}/3)`;
+      this.hud.showToast(msg);
     }
     this.updateHUD();
   }
 
   completeCurrentChapter() {
-    const q = this.getCurrentQuest();
+    const q = this.getCurrentQuestData();
     if (!q) return;
 
-    q.completed = true;
     let lightKey = 'welcome';
     if (this.currentChapter === 1) lightKey = 'welcome';
     if (this.currentChapter === 2) lightKey = 'craft';
@@ -117,11 +122,15 @@ export class QuestManager {
     if (this.currentChapter === 5) lightKey = 'home';
 
     this.saveManager.completeLight(lightKey);
-    this.saveManager.unlockStamp(q.stampKey);
-    this.saveManager.addTokens(q.tokens);
+    if (q.stampKey) {
+      this.saveManager.unlockStamp(q.stampKey);
+    }
+    if (q.tokens) {
+      this.saveManager.addTokens(q.tokens);
+    }
 
     this.audioDirector.playFanfare();
-    this.hud.showCelebration(q.lightName);
+    this.hud.showCelebration(q.tag);
 
     if (this.currentChapter < 5) {
       this.currentChapter++;

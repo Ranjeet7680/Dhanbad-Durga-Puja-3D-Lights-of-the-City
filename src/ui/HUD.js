@@ -1,3 +1,5 @@
+import { Localization } from '../core/Localization.js';
+
 export class HUD {
   constructor(saveManager) {
     this.saveManager = saveManager;
@@ -22,12 +24,43 @@ export class HUD {
     this.toastEl = document.getElementById('toast');
     this.toastMsgEl = document.getElementById('toast-message');
 
+    // UI Buttons & Labels for Localization
+    this.festTitleEl = document.getElementById('hud-fest-title');
+    this.festSubEl = document.getElementById('hud-fest-sub');
+    this.langBtnText = document.getElementById('lang-btn-text');
+    this.passportBtnLabel = document.getElementById('passport-btn-label');
+    this.photoBtnLabel = document.getElementById('photo-btn-label');
+    this.audioBtnLabel = document.getElementById('audio-btn-label');
+    this.voiceBtnLabel = document.getElementById('voice-btn-label');
+    this.settingsBtnLabel = document.getElementById('settings-btn-label');
+    this.minimapLabel = document.getElementById('minimap-label');
+    this.controlsHint = document.getElementById('controls-hint');
+    this.tokensPillLabel = document.getElementById('tokens-pill-label');
+    this.lightsPillLabel = document.getElementById('lights-pill-label');
+
     this.minimapCanvas = document.getElementById('minimap-canvas');
     if (this.minimapCanvas) {
       this.minimapCtx = this.minimapCanvas.getContext('2d');
     }
 
     this.updateStats();
+    this.applyLocalization();
+  }
+
+  applyLocalization() {
+    const isHi = Localization.currentLang === 'hi';
+    if (this.festTitleEl) this.festTitleEl.innerText = Localization.t('festivalTitle');
+    if (this.festSubEl) this.festSubEl.innerText = Localization.t('festivalSubtitle');
+    if (this.langBtnText) this.langBtnText.innerText = isHi ? 'English' : 'हिन्दी';
+    if (this.passportBtnLabel) this.passportBtnLabel.innerText = Localization.t('passportBtn');
+    if (this.photoBtnLabel) this.photoBtnLabel.innerText = Localization.t('photoBtn');
+    if (this.audioBtnLabel) this.audioBtnLabel.innerText = Localization.t('soundBtn');
+    if (this.voiceBtnLabel) this.voiceBtnLabel.innerText = Localization.t('voiceBtn');
+    if (this.settingsBtnLabel) this.settingsBtnLabel.innerText = Localization.t('settingsBtn');
+    if (this.minimapLabel) this.minimapLabel.innerText = Localization.t('radarTitle');
+    if (this.controlsHint) this.controlsHint.innerHTML = Localization.t('controlsHint');
+    if (this.tokensPillLabel) this.tokensPillLabel.innerText = `${Localization.t('tokensLabel')}:`;
+    if (this.lightsPillLabel) this.lightsPillLabel.innerText = `${Localization.t('lightsLabel')}:`;
   }
 
   updateStats() {
@@ -83,7 +116,11 @@ export class HUD {
   }
 
   showCelebration(lightName) {
-    this.showToast(`✨ Light Restored: ${lightName}! Token bonus granted!`);
+    const isHi = Localization.currentLang === 'hi';
+    const msg = isHi
+      ? `✨ दिव्य दीप प्रज्ज्वलित: ${lightName}! बोनस टोकन प्राप्त!`
+      : `✨ Light Restored: ${lightName}! Bonus tokens granted!`;
+    this.showToast(msg);
     this.triggerScreenFlash();
     this.triggerConfetti();
   }
@@ -97,7 +134,6 @@ export class HUD {
   }
 
   triggerConfetti() {
-    // Pure canvas celebratory particles
     const canvas = document.createElement('canvas');
     canvas.style.position = 'fixed';
     canvas.style.inset = '0';
@@ -131,7 +167,7 @@ export class HUD {
       for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.4; // gravity
+        p.vy += 0.4;
         p.rotation += p.rotSpeed;
 
         ctx.save();
@@ -158,7 +194,7 @@ export class HUD {
     const h = this.minimapCanvas.height;
     const cx = w / 2;
     const cy = h / 2;
-    const scale = 1.0; // 1 world unit = 1 pixel
+    const scale = 1.0;
 
     ctx.clearRect(0, 0, w, h);
 
@@ -182,14 +218,12 @@ export class HUD {
       const rx = (lm.position.x - playerPos.x) * scale;
       const rz = (lm.position.z - playerPos.z) * scale;
 
-      // Check if within radar circle
       if (Math.hypot(rx, rz) < cx - 6) {
         ctx.fillStyle = lm.color || '#FFB300';
         ctx.beginPath();
         ctx.arc(cx + rx, cy + rz, 4, 0, Math.PI * 2);
         ctx.fill();
 
-        // Label
         ctx.fillStyle = '#FFFFFF';
         ctx.font = '8px sans-serif';
         ctx.textAlign = 'center';
