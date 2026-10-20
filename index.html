@@ -126,10 +126,21 @@
     <div id="mobile-controls" class="mobile-controls">
       <div id="joystick-base" class="joystick-base">
         <div id="joystick-thumb" class="joystick-thumb"></div>
+        <div class="joystick-ring-glow"></div>
       </div>
       <div class="mobile-action-buttons">
-        <button id="btn-touch-interact" class="touch-btn touch-interact">E</button>
-        <button id="btn-touch-jump" class="touch-btn touch-jump">कूदें</button>
+        <button id="btn-touch-interact" class="touch-btn touch-interact" title="Interact [E]">
+          <span class="touch-icon">🪔</span>
+          <span class="touch-label" id="touch-interact-label">बातचीत [E]</span>
+        </button>
+        <div class="touch-sub-row">
+          <button id="btn-touch-sprint" class="touch-btn touch-sprint" title="Sprint Toggle">
+            <span class="touch-icon">🏃</span>
+          </button>
+          <button id="btn-touch-jump" class="touch-btn touch-jump" title="Jump">
+            <span class="touch-icon">⏫</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>

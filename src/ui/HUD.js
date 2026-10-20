@@ -96,11 +96,23 @@ export class HUD {
       this.interactionLabelEl.innerText = label;
       this.interactionKeyEl.innerText = key;
     }
+    const touchBtn = document.getElementById('btn-touch-interact');
+    const touchLabel = document.getElementById('touch-interact-label');
+    if (touchBtn) {
+      touchBtn.classList.add('available');
+      if (touchLabel) touchLabel.innerText = label;
+    }
   }
 
   hideInteractionPrompt() {
     if (this.interactionPromptEl) {
       this.interactionPromptEl.classList.remove('active');
+    }
+    const touchBtn = document.getElementById('btn-touch-interact');
+    const touchLabel = document.getElementById('touch-interact-label');
+    if (touchBtn) {
+      touchBtn.classList.remove('available');
+      if (touchLabel) touchLabel.innerText = 'बातचीत [E]';
     }
   }
 

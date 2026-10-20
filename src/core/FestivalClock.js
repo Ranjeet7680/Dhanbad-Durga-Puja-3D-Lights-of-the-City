@@ -131,9 +131,9 @@ export class FestivalClock {
       this.ambientLight.groundColor.setHex(0x281E18);
     }
 
-    // Boost emissive glow of fairy lights and pandals as darkness falls
+    // Boost emissive glow of fairy lights and pandals as darkness falls (calibrated to preserve texture fidelity)
     if (this.emissiveMaterials && Array.isArray(this.emissiveMaterials)) {
-      const emissiveIntensity = 0.6 + nightFactor * 1.5;
+      const emissiveIntensity = 0.45 + nightFactor * 0.65;
       for (const mat of this.emissiveMaterials) {
         if (mat && mat.emissiveIntensity !== undefined) {
           mat.emissiveIntensity = emissiveIntensity;
@@ -141,11 +141,11 @@ export class FestivalClock {
       }
     }
 
-    // Scale point lights
+    // Scale point lights cleanly
     if (this.pointLights && Array.isArray(this.pointLights)) {
       for (const light of this.pointLights) {
         if (light && light.userData && light.userData.baseIntensity) {
-          light.intensity = light.userData.baseIntensity * (0.6 + nightFactor * 0.6);
+          light.intensity = light.userData.baseIntensity * (0.75 + nightFactor * 0.35);
         }
       }
     }

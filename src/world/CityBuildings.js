@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { TextureGenerator } from './TextureGenerator.js';
 
 export class CityBuildings {
   constructor(scene, festivalClock) {
@@ -17,14 +18,14 @@ export class CityBuildings {
   buildPerimeterStreets() {
     // Modular Indian shopfront facades along the perimeter to surround the festival in a bustling city
     const shopNames = [
-      { hi: 'धनबाद साड़ी सदन', en: 'DHANBAD SAREE SADAN', col: 0xFF1744 },
-      { hi: 'बंगाली मिष्ठान भंडार', en: 'BENGAL SWEETS & BAKERY', col: 0xFFB300 },
-      { hi: 'कोलफील्ड इलेक्ट्रॉनिक्स', en: 'COALFIELD ELECTRONICS', col: 0x00E5FF },
-      { hi: 'मां तारा भोजनालय', en: 'MAA TARA BHOJANALAYA', col: 0x76FF03 },
-      { hi: 'रॉयल ज्वेलर्स', en: 'ROYAL JEWELLERS', col: 0xFFD54F },
-      { hi: 'न्यू धनबाद वस्त्रालय', en: 'NEW TEXTILE MART', col: 0xE040FB },
-      { hi: 'अन्नपूर्णा मिष्ठान', en: 'ANNAPURNA SWEET CORNER', col: 0xFF9100 },
-      { hi: 'अशोक मेडिकल स्टोर', en: 'ASHOK MEDICAL STORE', col: 0x00E676 }
+      { hi: 'धनबाद साड़ी सदन', en: 'DHANBAD SAREE SADAN', col: 0xFF1744, type: 'textile' },
+      { hi: 'बंगाली मिष्ठान भंडार', en: 'BENGAL SWEETS & BAKERY', col: 0xFFB300, type: 'sweets' },
+      { hi: 'कोलफील्ड इलेक्ट्रॉनिक्स', en: 'COALFIELD ELECTRONICS', col: 0x00E5FF, type: 'electronics' },
+      { hi: 'मां तारा भोजनालय', en: 'MAA TARA BHOJANALAYA', col: 0xE64A19, type: 'food' },
+      { hi: 'रॉयल ज्वेलर्स', en: 'ROYAL JEWELLERS', col: 0xFFD54F, type: 'textile' },
+      { hi: 'न्यू धनबाद वस्त्रालय', en: 'NEW TEXTILE MART', col: 0xC2185B, type: 'textile' },
+      { hi: 'अन्नपूर्णा मिष्ठान', en: 'ANNAPURNA SWEETS', col: 0xFF9100, type: 'sweets' },
+      { hi: 'अशोक मेडिकल स्टोर', en: 'ASHOK MEDICAL STORE', col: 0x00897B, type: 'electronics' }
     ];
 
     // Building layout blocks lining the main roads (North, South, East, West)
@@ -99,14 +100,15 @@ export class CityBuildings {
       shopAwning.rotation.x = 0.2;
       bldg.add(shopAwning);
 
-      // Glowing Shopfront Window
+      // Detailed Textured Indian Shopfront Display
+      const shopTex = TextureGenerator.createShopfrontTexture(shopInfo.hi, shopInfo.en, shopInfo.type);
       const winMat = new THREE.MeshStandardMaterial({
-        color: 0xFFE082,
-        emissive: 0xFFA000,
-        emissiveIntensity: 0.85,
-        roughness: 0.2
+        map: shopTex,
+        roughness: 0.35,
+        metalness: 0.1,
+        emissive: 0x332211,
+        emissiveIntensity: 0.35
       });
-      this.festivalClock.registerEmissive(winMat);
       this.windowMaterials.push(winMat);
 
       const shopWin = new THREE.Mesh(
@@ -116,18 +118,22 @@ export class CityBuildings {
       shopWin.position.set(0, 2.0, p.d / 2 + 0.05);
       bldg.add(shopWin);
 
-      // Glowing Neon Shop Signboard above awning
+      // Authentic Bilingual Commercial Signboard above awning
+      const signTex = TextureGenerator.createSignboardTexture(
+        shopInfo.hi,
+        `${shopInfo.en} • DHANBAD`,
+        'gold'
+      );
       const signMat = new THREE.MeshStandardMaterial({
-        color: shopInfo.col,
-        emissive: shopInfo.col,
-        emissiveIntensity: 1.8,
-        roughness: 0.2
+        map: signTex,
+        roughness: 0.4,
+        emissive: 0x221100,
+        emissiveIntensity: 0.4
       });
-      this.festivalClock.registerEmissive(signMat);
       this.neonMaterials.push(signMat);
 
       const signBoard = new THREE.Mesh(
-        new THREE.BoxGeometry(p.w * 0.75, 1.2, 0.2),
+        new THREE.PlaneGeometry(p.w * 0.75, 1.2),
         signMat
       );
       signBoard.position.set(0, 4.8, p.d / 2 + 0.1);
@@ -163,10 +169,10 @@ export class CityBuildings {
         }
       }
 
-      // Small street warm light cast in front of shop
-      const shopLight = new THREE.PointLight(0xFFB300, 1.2, 10);
-      shopLight.position.set(0, 3.2, p.d / 2 + 2.5);
-      shopLight.userData.baseIntensity = 1.2;
+      // Soft ambient light cast in front of shop entrance
+      const shopLight = new THREE.PointLight(0xFFB300, 0.75, 8, 2);
+      shopLight.position.set(0, 3.2, p.d / 2 + 2.0);
+      shopLight.userData.baseIntensity = 0.75;
       this.festivalClock.registerFestivalLight(shopLight);
       bldg.add(shopLight);
 

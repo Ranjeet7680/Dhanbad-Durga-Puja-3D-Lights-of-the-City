@@ -283,4 +283,173 @@ export class TextureGenerator {
     const texture = new THREE.CanvasTexture(canvas);
     return texture;
   }
+
+  // Realistic Indian Commercial Shopfront (Sweets, Sarees, Electronics, Food)
+  static createShopfrontTexture(shopHi, shopEn, type = 'sweets') {
+    const width = 1024;
+    const height = 512;
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+
+    // Wall & Glass shopframe interior gradient
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
+    bgGrad.addColorStop(0, '#15101A');
+    bgGrad.addColorStop(0.3, '#2A1C1A');
+    bgGrad.addColorStop(1, '#1A1412');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, width, height);
+
+    // Warm Interior Store Light glow
+    const intGlow = ctx.createRadialGradient(width / 2, height * 0.45, 50, width / 2, height * 0.45, 450);
+    intGlow.addColorStop(0, 'rgba(255, 213, 79, 0.45)');
+    intGlow.addColorStop(0.7, 'rgba(230, 81, 0, 0.2)');
+    intGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = intGlow;
+    ctx.fillRect(0, 0, width, height);
+
+    // Roll-up shutter box at top
+    ctx.fillStyle = '#37474F';
+    ctx.fillRect(0, 0, width, 55);
+    ctx.fillStyle = '#263238';
+    for (let y = 10; y < 55; y += 8) {
+      ctx.fillRect(0, y, width, 3);
+    }
+
+    // Glass window border & mullions
+    ctx.strokeStyle = '#546E7A';
+    ctx.lineWidth = 10;
+    ctx.strokeRect(5, 55, width - 10, height - 60);
+
+    // Center divider mullion
+    ctx.fillStyle = '#455A64';
+    ctx.fillRect(width / 2 - 6, 55, 12, height - 55);
+
+    // Store Display Specifics
+    if (type === 'sweets') {
+      // Tiered sweet display shelves with trays of laddu, gulab jamun, barfi
+      for (let s = 0; s < 3; s++) {
+        const shelfY = 220 + s * 90;
+        ctx.fillStyle = '#8D6E63';
+        ctx.fillRect(40, shelfY, width - 80, 16);
+
+        // Trays
+        const trayCount = 6;
+        const trayW = (width - 120) / trayCount;
+        for (let t = 0; t < trayCount; t++) {
+          const tx = 50 + t * trayW;
+          ctx.fillStyle = '#B0BEC5'; // Steel tray
+          ctx.fillRect(tx, shelfY - 26, trayW - 12, 26);
+
+          // Sweets color
+          const sweetCol = ['#FFA000', '#D84315', '#FFF9C4', '#8D6E63', '#FFB300', '#F4511E'][t % 6];
+          ctx.fillStyle = sweetCol;
+          for (let dot = 6; dot < trayW - 16; dot += 12) {
+            ctx.beginPath();
+            ctx.arc(tx + dot, shelfY - 14, 5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+    } else {
+      // Clothing / Electronics / Fabric shelves
+      for (let s = 0; s < 3; s++) {
+        const shelfY = 210 + s * 95;
+        ctx.fillStyle = '#607D8B';
+        ctx.fillRect(40, shelfY, width - 80, 14);
+
+        const boltCount = 10;
+        const boltW = (width - 120) / boltCount;
+        for (let b = 0; b < boltCount; b++) {
+          const bx = 50 + b * boltW;
+          const fabricCol = ['#C2185B', '#E64A19', '#FBC02D', '#00897B', '#1E88E5', '#8E24AA'][b % 6];
+          ctx.fillStyle = fabricCol;
+          ctx.fillRect(bx, shelfY - 55, boltW - 8, 55);
+        }
+      }
+    }
+
+    // Glass sheen / reflection diagonal
+    ctx.save();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.beginPath();
+    ctx.moveTo(100, height);
+    ctx.lineTo(260, height);
+    ctx.lineTo(width * 0.7, 55);
+    ctx.lineTo(width * 0.55, 55);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // Small lower gold text for authentic look
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+    ctx.font = 'bold 20px "Plus Jakarta Sans", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${shopHi} • ${shopEn}`, width / 2, height - 20);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.anisotropy = 4;
+    return texture;
+  }
+
+  // Realistic Puja Committee Fabric Arch Banner
+  static createPujaBannerTexture(committeeNameHi, taglineEn, bgColor = '#8B1E1E') {
+    const width = 1024;
+    const height = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+
+    // Rich Festive Background with cloth weave gradient
+    const grad = ctx.createLinearGradient(0, 0, width, 0);
+    grad.addColorStop(0, bgColor);
+    grad.addColorStop(0.5, '#4A0D0D');
+    grad.addColorStop(1, bgColor);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, height);
+
+    // Decorative Marigold Border Top and Bottom
+    for (let x = 12; x < width; x += 24) {
+      ctx.fillStyle = '#FFA000';
+      ctx.beginPath();
+      ctx.arc(x, 14, 10, 0, Math.PI * 2);
+      ctx.arc(x, height - 14, 10, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#FFD54F';
+      ctx.beginPath();
+      ctx.arc(x, 14, 5, 0, Math.PI * 2);
+      ctx.arc(x, height - 14, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Border lines
+    ctx.strokeStyle = '#FFD54F';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(8, 28, width - 16, height - 56);
+
+    // Sacred Om / Swastik / Trishul iconography
+    ctx.fillStyle = '#FFD54F';
+    ctx.font = 'bold 36px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('卐', 60, height / 2 + 10);
+    ctx.fillText('卐', width - 60, height / 2 + 10);
+
+    // Main Committee Title (Hindi)
+    ctx.fillStyle = '#FFF8E1';
+    ctx.font = 'bold 46px "Cinzel", "Rozha One", serif';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+    ctx.shadowBlur = 12;
+    ctx.fillText(committeeNameHi, width / 2, height / 2 - 18);
+
+    // Subtitle (English / Devanagari)
+    ctx.fillStyle = '#FFD54F';
+    ctx.font = '600 24px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText(taglineEn, width / 2, height / 2 + 38);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    return texture;
+  }
 }

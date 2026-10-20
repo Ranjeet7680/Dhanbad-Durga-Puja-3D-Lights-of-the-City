@@ -1394,32 +1394,40 @@ canvas {
   box-shadow: 0 10px 35px rgba(255, 179, 0, 0.7);
 }
 
-/* Mobile Controls */
+/* ==========================================================================
+   📱 Comprehensive Mobile UI & Touch Experience Optimization
+   ========================================================================== */
+
+/* Mobile Controls Layer */
 .mobile-controls {
   display: none;
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 15;
-}
-
-@media (max-width: 900px), (pointer: coarse) {
-  .mobile-controls {
-    display: block;
-  }
+  z-index: 25;
 }
 
 .joystick-base {
   position: absolute;
-  bottom: 40px;
-  left: 40px;
-  width: 110px;
-  height: 110px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid var(--primary-gold);
+  bottom: 24px;
+  left: 24px;
+  width: 124px;
+  height: 124px;
+  background: radial-gradient(circle, rgba(255, 179, 0, 0.12) 0%, rgba(13, 20, 36, 0.72) 75%);
+  border: 2px solid rgba(255, 179, 0, 0.5);
   border-radius: 50%;
   pointer-events: auto;
   touch-action: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(255, 179, 0, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.joystick-ring-glow {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  pointer-events: none;
 }
 
 .joystick-thumb {
@@ -1427,38 +1435,380 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 44px;
-  height: 44px;
-  background: var(--primary-gold);
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, #FFE082 0%, #FFB300 60%, #E64A19 100%);
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 4px 14px rgba(230, 74, 25, 0.6);
+  pointer-events: none;
 }
 
 .mobile-action-buttons {
   position: absolute;
-  bottom: 40px;
-  right: 40px;
+  bottom: 24px;
+  right: 24px;
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 12px;
   pointer-events: auto;
 }
 
+.touch-sub-row {
+  display: flex;
+  gap: 12px;
+}
+
 .touch-btn {
-  width: 58px;
-  height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
+  font-family: inherit;
   font-weight: 800;
-  font-size: 13px;
-  border: 2px solid var(--primary-gold);
   cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
+
+.touch-btn:active {
+  transform: scale(0.92);
+}
+
+/* Primary Interaction Button (Golden Lotus Theme) */
 .touch-interact {
-  background: var(--primary-gold);
+  width: 76px;
+  height: 76px;
+  background: linear-gradient(135deg, #FFB300 0%, #E64A19 100%);
+  border: 3px solid rgba(255, 255, 255, 0.9);
   color: #000;
-  font-size: 18px;
+  box-shadow: 0 6px 20px rgba(230, 74, 25, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.6);
 }
+
+.touch-interact .touch-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.touch-interact .touch-label {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #1A1208;
+  margin-top: 2px;
+  max-width: 68px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Highlighting when near an NPC, stall, or ride */
+.touch-interact.available {
+  background: linear-gradient(135deg, #00E5FF 0%, #00B0FF 100%);
+  border-color: #FFFFFF;
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.8), 0 0 10px #FFFFFF;
+  animation: touchInteractPulse 1.2s infinite alternate ease-in-out;
+}
+
+.touch-interact.available .touch-label {
+  color: #002244;
+}
+
+@keyframes touchInteractPulse {
+  0% { transform: scale(1); box-shadow: 0 0 18px rgba(0, 229, 255, 0.6); }
+  100% { transform: scale(1.08); box-shadow: 0 0 32px rgba(0, 229, 255, 1); }
+}
+
+/* Secondary Touch Buttons (Sprint & Jump) */
+.touch-sprint,
 .touch-jump {
-  background: rgba(255, 255, 255, 0.2);
-  color: #FFF;
+  width: 52px;
+  height: 52px;
+  background: rgba(18, 26, 44, 0.88);
+  border: 2px solid rgba(255, 179, 0, 0.6);
+  color: #FFFFFF;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
 }
+
+.touch-sprint .touch-icon,
+.touch-jump .touch-icon {
+  font-size: 20px;
+}
+
+.touch-sprint.active {
+  background: linear-gradient(135deg, #00E5FF 0%, #0288D1 100%);
+  border-color: #FFFFFF;
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.7);
+}
+
+/* ==========================================================================
+   📱 Responsive Breakpoints for Mobile & Tablets (max-width: 900px or touch)
+   ========================================================================== */
+@media (max-width: 900px), (pointer: coarse) {
+  .mobile-controls {
+    display: block;
+  }
+
+  /* Automatically hide desktop keyboard hint on touch devices */
+  .controls-hint {
+    display: none !important;
+  }
+
+  /* Compact HUD Padding */
+  .hud-overlay {
+    padding: 10px;
+  }
+
+  /* Top Left Brand: Compact Flame & District Pill */
+  .hud-top-left {
+    top: 10px;
+    left: 10px;
+    gap: 6px;
+    z-index: 20;
+  }
+
+  .festival-badge {
+    padding: 6px 10px;
+    gap: 8px;
+    border-radius: var(--radius-sm);
+  }
+
+  .flame-icon {
+    font-size: 18px;
+  }
+
+  .festival-title {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .festival-subtitle {
+    display: none; /* Save vertical space on phones */
+  }
+
+  .district-indicator {
+    padding: 4px 10px;
+    font-size: 11px;
+    border-radius: 14px;
+  }
+
+  /* Top Center Objective Card: Slim Ribbon that doesn't collide */
+  .hud-top-center {
+    top: 10px;
+    max-width: 380px;
+    width: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 18;
+  }
+
+  .objective-card {
+    padding: 6px 12px;
+    border-radius: 12px;
+  }
+
+  .objective-header {
+    margin-bottom: 2px;
+  }
+
+  .objective-light-tag {
+    font-size: 10px;
+  }
+
+  .objective-counter {
+    font-size: 9px;
+    padding: 1px 6px;
+  }
+
+  .objective-desc {
+    font-size: 11px;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Top Right Action Row: Condensed into compact touch pills */
+  .hud-top-right {
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+    z-index: 20;
+  }
+
+  .clock-widget {
+    padding: 4px 8px;
+    gap: 6px;
+    border-radius: var(--radius-sm);
+  }
+
+  .clock-icon {
+    font-size: 16px;
+  }
+
+  .clock-time {
+    font-size: 13px;
+  }
+
+  .clock-band {
+    display: none; /* Hidden on mobile to keep clock neat */
+  }
+
+  .action-buttons {
+    gap: 5px;
+    max-width: 320px;
+  }
+
+  /* Hide button text on mobile to display sleek 40px icon pills */
+  .hud-btn {
+    padding: 7px 9px;
+    min-width: 38px;
+    min-height: 38px;
+    justify-content: center;
+    border-radius: 10px;
+  }
+
+  .hud-btn .btn-label {
+    display: none !important;
+  }
+
+  .stamp-count-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+
+  /* Minimap: Relocated slightly above joystick to prevent overlap */
+  .hud-bottom-left {
+    bottom: auto;
+    top: 68px;
+    left: 10px;
+    z-index: 15;
+  }
+
+  .minimap-container {
+    width: 90px;
+    height: 90px;
+    border-width: 1.5px;
+    opacity: 0.9;
+  }
+
+  .minimap-label {
+    font-size: 7px;
+    bottom: 3px;
+  }
+
+  /* Bottom Right Tokens: Positioned above touch action buttons */
+  .hud-bottom-right {
+    bottom: 116px;
+    right: 18px;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-end;
+  }
+
+  .stat-pill {
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 10px;
+  }
+
+  /* Interaction Prompt Banner */
+  .hud-interaction {
+    bottom: 110px;
+    padding: 8px 16px;
+  }
+
+  .interaction-text {
+    font-size: 12px;
+  }
+
+  /* Dialogue Box: Slide-up bottom sheet on mobile screens */
+  .dialogue-overlay {
+    align-items: flex-end;
+    padding: 10px;
+  }
+
+  .dialogue-card {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 20px 20px 14px 14px;
+    padding: 16px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .dialogue-choice-btn {
+    min-height: 48px;
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+
+  /* Modals: Mobile touch scaling */
+  .modal-card {
+    width: 94vw;
+    max-width: 94vw;
+    max-height: 88vh;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .passport-header h2 {
+    font-size: 18px;
+  }
+
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Extra small mobile screens (e.g. portrait phones <= 480px) */
+@media (max-width: 480px) {
+  .hud-top-center {
+    max-width: 260px;
+  }
+
+  .objective-desc {
+    max-width: 180px;
+  }
+
+  .action-buttons {
+    max-width: 210px;
+  }
+
+  .joystick-base {
+    bottom: 16px;
+    left: 16px;
+    width: 110px;
+    height: 110px;
+  }
+
+  .mobile-action-buttons {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .touch-interact {
+    width: 66px;
+    height: 66px;
+  }
+
+  .touch-interact .touch-icon {
+    font-size: 22px;
+  }
+
+  .touch-sprint,
+  .touch-jump {
+    width: 46px;
+    height: 46px;
+  }
+}
+

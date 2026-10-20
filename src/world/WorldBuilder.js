@@ -22,6 +22,9 @@ export class WorldBuilder {
     this.initRoads();
     this.initSubsystems();
     this.initCityBuildings();
+    this.initDistrictGateways();
+    this.initCivicHelpdesk();
+    this.initStreetFoodAndChaiStall();
     this.initArtisanCourtyard();
     this.initBoundaryAndDecorations();
     this.initInteractionRings();
@@ -90,6 +93,7 @@ export class WorldBuilder {
 
   initSubsystems() {
     this.centralHub = new CentralHub(this.scene, this.festivalClock);
+    this.engine.addUpdatable(this.centralHub);
 
     this.lightTunnel = new LightTunnel(this.scene, this.festivalClock);
     this.engine.addUpdatable(this.lightTunnel);
@@ -99,6 +103,231 @@ export class WorldBuilder {
 
     this.megaMela = new MegaMela(this.scene, this.festivalClock);
     this.engine.addUpdatable(this.megaMela);
+  }
+
+  initDistrictGateways() {
+    // Overhead thematic arches connecting the Central Hub to adjacent districts
+    const gateways = [
+      // East Gateway to Mega Mela
+      {
+        x: 18, z: 0, rot: Math.PI / 2,
+        title: 'धनबाद विशाल मेला प्रांगण • MEGAMELA',
+        subtitle: '24m Giant Wheel • Food Lane • Fairground Games',
+        col: '#C2185B'
+      },
+      // South Gateway to Purana Bazar / Heritage Lane
+      {
+        x: 0, z: 18, rot: 0,
+        title: 'पुराना बाज़ार एवं हीरापुर हेरिटेज लेन',
+        subtitle: 'Heritage Courtyard • Dida’s Nostalgic Memories',
+        col: '#E65100'
+      },
+      // West Gateway to Jharudih Craft Lane
+      {
+        x: -18, z: 0, rot: -Math.PI / 2,
+        title: 'झारूडीह शिल्प वाटिका • JHARUDIH CRAFT LANE',
+        subtitle: 'Madan da’s Workshop • Bamboo & Clay Artisan Guild',
+        col: '#2E7D32'
+      }
+    ];
+
+    const pillarMat = new THREE.MeshStandardMaterial({ color: 0x8D6E63, roughness: 0.7 });
+    const beamMat = new THREE.MeshStandardMaterial({ color: 0x5D4037, roughness: 0.8 });
+
+    gateways.forEach(g => {
+      const arch = new THREE.Group();
+      arch.position.set(g.x, 0, g.z);
+      arch.rotation.y = g.rot;
+
+      // Two Wooden / Bamboo Pillars
+      const p1 = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.35, 7.5, 8), pillarMat);
+      p1.position.set(-6.5, 3.75, 0);
+      arch.add(p1);
+
+      const p2 = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.35, 7.5, 8), pillarMat);
+      p2.position.set(6.5, 3.75, 0);
+      arch.add(p2);
+
+      // Crossbeam
+      const beam = new THREE.Mesh(new THREE.BoxGeometry(14, 0.5, 0.6), beamMat);
+      beam.position.set(0, 7.2, 0);
+      arch.add(beam);
+
+      // Hanging Fabric Banner
+      const bannerTex = TextureGenerator.createPujaBannerTexture(g.title, g.subtitle, g.col);
+      const bannerMesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(12, 2.2),
+        new THREE.MeshBasicMaterial({ map: bannerTex, transparent: true })
+      );
+      bannerMesh.position.set(0, 6.0, 0.05);
+      arch.add(bannerMesh);
+
+      // Back of banner
+      const bannerBack = new THREE.Mesh(
+        new THREE.PlaneGeometry(12, 2.2),
+        new THREE.MeshBasicMaterial({ map: bannerTex, transparent: true })
+      );
+      bannerBack.position.set(0, 6.0, -0.05);
+      bannerBack.rotation.y = Math.PI;
+      arch.add(bannerBack);
+
+      // Small lantern on each pillar
+      [-6.5, 6.5].forEach(lx => {
+        const lantern = new THREE.Mesh(
+          new THREE.SphereGeometry(0.18, 8, 8),
+          new THREE.MeshStandardMaterial({ color: 0xFFD54F, emissive: 0xFFA000, emissiveIntensity: 0.8 })
+        );
+        lantern.position.set(lx, 7.6, 0);
+        this.festivalClock.registerEmissive(lantern.material);
+        arch.add(lantern);
+      });
+
+      this.scene.add(arch);
+    });
+  }
+
+  initCivicHelpdesk() {
+    // Dhanbad District Police & Medical Assistance Helpdesk (Near Central Hub North-West)
+    const helpdesk = new THREE.Group();
+    helpdesk.position.set(-12, 0, 7);
+
+    // Platform & Tent Kiosk
+    const tentRoofMat = new THREE.MeshStandardMaterial({ color: 0x1565C0, roughness: 0.6 }); // Police Blue
+    const tentRoof = new THREE.Mesh(new THREE.ConeGeometry(2.4, 1.2, 4), tentRoofMat);
+    tentRoof.position.y = 3.2;
+    tentRoof.rotation.y = Math.PI / 4;
+    helpdesk.add(tentRoof);
+
+    // Support legs
+    const legMat = new THREE.MeshStandardMaterial({ color: 0xCFD8DC, metalness: 0.8 });
+    for (let i = 0; i < 4; i++) {
+      const ang = (i * Math.PI) / 2 + Math.PI / 4;
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.5, 6), legMat);
+      leg.position.set(Math.cos(ang) * 1.5, 1.25, Math.sin(ang) * 1.5);
+      helpdesk.add(leg);
+    }
+
+    // Helpdesk Counter Desk
+    const deskMat = new THREE.MeshStandardMaterial({ color: 0x37474F, roughness: 0.8 });
+    const desk = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.9, 0.8), deskMat);
+    desk.position.set(0, 0.45, 0);
+    helpdesk.add(desk);
+
+    // Signboard on Front of Desk
+    const signTex = TextureGenerator.createSignboardTexture(
+      'धनबाद जिला पुलिस • सहायता केंद्र',
+      'POLICE & FIRST AID HELP DESK • 112',
+      'blue'
+    );
+    const signMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.0, 0.7),
+      new THREE.MeshBasicMaterial({ map: signTex })
+    );
+    signMesh.position.set(0, 0.5, 0.42);
+    helpdesk.add(signMesh);
+
+    // Flashing Civic Beacon Light (Blue / Red LED)
+    const beacon = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.12, 0.12, 0.25, 8),
+      new THREE.MeshStandardMaterial({ color: 0x2196F3, emissive: 0x1976D2, emissiveIntensity: 1.2 })
+    );
+    beacon.position.set(0, 3.85, 0);
+    this.festivalClock.registerEmissive(beacon.material);
+    helpdesk.add(beacon);
+
+    // Crowd control barriers (Yellow-Black striped police barricades)
+    const barricadeMat = new THREE.MeshStandardMaterial({ color: 0xFDD835, roughness: 0.6 });
+    [-2.2, 2.2].forEach(bx => {
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.85, 0.1), barricadeMat);
+      bar.position.set(bx, 0.42, 1.2);
+      helpdesk.add(bar);
+    });
+
+    this.scene.add(helpdesk);
+  }
+
+  initStreetFoodAndChaiStall() {
+    // Roadside Kulhad Chai & Jalebi stall on the south walkway
+    const chaiStall = new THREE.Group();
+    chaiStall.position.set(11, 0, 14);
+
+    // Wooden cart on iron wheels
+    const cartMat = new THREE.MeshStandardMaterial({ color: 0x4E342E, roughness: 0.85 });
+    const cart = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.85, 1.4), cartMat);
+    cart.position.y = 0.55;
+    chaiStall.add(cart);
+
+    // Cart Wheels
+    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x212121, metalness: 0.8 });
+    [-1.0, 1.0].forEach(wx => {
+      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.08, 12), wheelMat);
+      wheel.rotation.z = Math.PI / 2;
+      wheel.position.set(wx, 0.35, 0.75);
+      chaiStall.add(wheel);
+
+      const wheelBack = wheel.clone();
+      wheelBack.position.z = -0.75;
+      chaiStall.add(wheelBack);
+    });
+
+    // Striped Fabric Canopy (Yellow & Red)
+    const canopyMat = new THREE.MeshStandardMaterial({ color: 0xE64A19, roughness: 0.7 });
+    const canopy = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.15, 1.6), canopyMat);
+    canopy.position.y = 2.4;
+    chaiStall.add(canopy);
+
+    // Bamboo canopy poles
+    const poleMat = new THREE.MeshStandardMaterial({ color: 0xAFB42B, roughness: 0.6 });
+    [-1.1, 1.1].forEach(px => {
+      [-0.65, 0.65].forEach(pz => {
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1.6, 6), poleMat);
+        pole.position.set(px, 1.6, pz);
+        chaiStall.add(pole);
+      });
+    });
+
+    // Brass Tea Samovar / Kettle
+    const brassMat = new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 0.85, roughness: 0.25 });
+    const kettle = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.28, 0.5, 12), brassMat);
+    kettle.position.set(-0.6, 1.25, 0.2);
+    chaiStall.add(kettle);
+
+    // Large Jalebi / Snack Frying Kadhai (Cast iron wok)
+    const wokMat = new THREE.MeshStandardMaterial({ color: 0x263238, metalness: 0.9, roughness: 0.3 });
+    const wok = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2), wokMat);
+    wok.position.set(0.4, 1.05, 0);
+    wok.rotation.x = Math.PI;
+    chaiStall.add(wok);
+
+    // Small incandescent yellow hanging bulb
+    const stallBulb = new THREE.Mesh(
+      new THREE.SphereGeometry(0.1, 8, 8),
+      new THREE.MeshStandardMaterial({ color: 0xFFE082, emissive: 0xFFA000, emissiveIntensity: 0.9 })
+    );
+    stallBulb.position.set(0, 2.2, 0);
+    this.festivalClock.registerEmissive(stallBulb.material);
+    chaiStall.add(stallBulb);
+
+    const stallLight = new THREE.PointLight(0xFFB74D, 0.7, 5, 2);
+    stallLight.position.set(0, 2.1, 0);
+    stallLight.userData.baseIntensity = 0.7;
+    this.festivalClock.registerFestivalLight(stallLight);
+    chaiStall.add(stallLight);
+
+    // Stall Banner
+    const bannerTex = TextureGenerator.createSignboardTexture(
+      'कोयलांचल कुल्हड़ चाय • KULHAD CHAI',
+      'गर्मा-गर्म जलेबी एवं स्पेशल मसाला चाय',
+      'gold'
+    );
+    const bannerMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.2, 0.55),
+      new THREE.MeshBasicMaterial({ map: bannerTex })
+    );
+    bannerMesh.position.set(0, 0.6, 0.72);
+    chaiStall.add(bannerMesh);
+
+    this.scene.add(chaiStall);
   }
 
   initCityBuildings() {
@@ -135,9 +364,9 @@ export class WorldBuilder {
       artisanGroup.add(pole);
     }
 
-    const workLight = new THREE.PointLight(0xFFB300, 1.8, 18);
+    const workLight = new THREE.PointLight(0xFFB300, 1.2, 14, 1.6);
     workLight.position.set(0, 4.5, 0);
-    workLight.userData.baseIntensity = 1.8;
+    workLight.userData.baseIntensity = 1.2;
     this.festivalClock.registerFestivalLight(workLight);
     artisanGroup.add(workLight);
 
@@ -264,9 +493,9 @@ export class WorldBuilder {
 
     lampPosts.forEach((lp) => {
       // Cast warm downward light pool onto the road
-      const streetLight = new THREE.PointLight(0xFFB300, 1.5, 14);
+      const streetLight = new THREE.PointLight(0xFFB300, 1.0, 12, 1.6);
       streetLight.position.set(lp.x, 4.2, lp.z);
-      streetLight.userData.baseIntensity = 1.5;
+      streetLight.userData.baseIntensity = 1.0;
       this.festivalClock.registerFestivalLight(streetLight);
       this.scene.add(streetLight);
     });

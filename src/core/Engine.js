@@ -29,7 +29,7 @@ export class Engine {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.15;
+    this.renderer.toneMappingExposure = 1.05;
 
     this.container.appendChild(this.renderer.domElement);
 
@@ -52,9 +52,9 @@ export class Engine {
 
     this.bloomPass = new UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
-      1.15, // strength
-      0.45, // radius
-      0.82  // threshold
+      0.72, // Calibrated bloom strength: avoids blinding flare blowout
+      0.40, // radius
+      0.86  // threshold: only bright emissive bulbs and flames trigger bloom
     );
 
     const outputPass = new OutputPass();
